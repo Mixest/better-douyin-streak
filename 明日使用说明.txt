@@ -34,7 +34,7 @@
   · 请勿用于商业营销或批量骚扰，风险自负
 
 【本次部署做了什么】
-  1. 下载 douyin-cloud-streak 源码（MIT，GitHub 官方 main 分支）
+  1. 下载 抖音续火花 源码（MIT，GitHub 官方 main 分支）
   2. 创建 .venv 虚拟环境并用清华镜像安装全部依赖（fastapi/playwright/apscheduler 等）
   3. 用 npmmirror 镜像下载 Playwright Chromium / HeadlessShell / ffmpeg 完整内核
   4. 所有 .bat 脚本改为使用 .venv 里的 Python（避免系统 Python 缺依赖）

@@ -16,7 +16,7 @@ import requests
 
 from .config import DEFAULT_ACCOUNT_ID, DATA_DIR
 
-logger = logging.getLogger("douyin-cloud-streak")
+logger = logging.getLogger("better-douyin-streak")
 
 _TIMEOUT = 12
 _FILE_LOCKS: dict[str, threading.Lock] = {}

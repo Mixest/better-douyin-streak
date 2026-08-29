@@ -31,7 +31,7 @@ from playwright.sync_api import sync_playwright
 from .accounts import acquire_browser_slot, release_browser_slot
 from .config import DEFAULT_ACCOUNT_ID, ROOT_STATE_PATH, account_state_path
 
-logger = logging.getLogger("douyin-cloud-streak")
+logger = logging.getLogger("better-douyin-streak")
 
 CHAT_URL = "https://www.douyin.com/chat?isPopup=1"
 

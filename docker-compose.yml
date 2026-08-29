@@ -1,9 +1,9 @@
 version: '3.8'
 
 services:
-  douyin-cloud-streak:
+  better-douyin-streak:
     build: .
-    container_name: douyin-cloud-streak
+    container_name: better-douyin-streak
     restart: always
     ports:
       - "8000:8000"

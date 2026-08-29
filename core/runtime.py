@@ -110,7 +110,7 @@ class RingHandler(logging.Handler):
 
 
 def setup_logging() -> logging.Logger:
-    logger = logging.getLogger("douyin-cloud-streak")
+    logger = logging.getLogger("better-douyin-streak")
     if logger.handlers:
         return logger
     logger.setLevel(logging.INFO)

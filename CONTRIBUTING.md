@@ -9,8 +9,8 @@
 1. **Fork 本仓库** 到你自己的 GitHub 账号；
 2. **克隆代码到本地**：
    ```bash
-   git clone https://github.com/<你的用户名>/douyin-cloud-streak.git
-   cd douyin-cloud-streak
+   git clone https://github.com/<你的用户名>/better-douyin-streak.git
+   cd better-douyin-streak
    ```
 3. **创建 Python 虚拟环境并安装依赖**：
    ```bash

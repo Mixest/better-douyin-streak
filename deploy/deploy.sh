@@ -12,8 +12,8 @@ fi
 
 SERVICE_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 VENV="$SERVICE_DIR/.venv"
-UNIT_SRC="$SERVICE_DIR/deploy/douyin-cloud-streak.service"
-UNIT_DST="/etc/systemd/system/douyin-cloud-streak.service"
+UNIT_SRC="$SERVICE_DIR/deploy/better-douyin-streak.service"
+UNIT_DST="/etc/systemd/system/better-douyin-streak.service"
 
 echo "==> 1. 安装系统依赖..."
 if command -v apt-get &>/dev/null; then
@@ -72,13 +72,13 @@ fi
 echo "==> 8. 注册并启动 systemd 开机自启服务..."
 systemctl stop douyin-spark 2>/dev/null || true
 systemctl disable douyin-spark 2>/dev/null || true
-systemctl stop douyin-cloud-streak 2>/dev/null || true
+systemctl stop better-douyin-streak 2>/dev/null || true
 pkill -9 -f "python.*app.py" 2>/dev/null || true
 fuser -k -9 8000/tcp 2>/dev/null || true
 sed "s|__DIR__|$SERVICE_DIR|g; s|__VENV__|$VENV|g" "$UNIT_SRC" > "$UNIT_DST"
 systemctl daemon-reload
-systemctl enable --now douyin-cloud-streak
-systemctl restart douyin-cloud-streak
+systemctl enable --now better-douyin-streak
+systemctl restart better-douyin-streak
 sleep 2
 
 IP="$(hostname -I 2>/dev/null | awk '{print $1}')"

@@ -1,6 +1,6 @@
 """Playwright 自动化：在抖音网页版私信页面给指定好友发送消息。
 
-发送逻辑参考 douyin-cloud-streak（MIT），要点：
+发送逻辑参考原版项目 douyin-cloud-streak（MIT，AI 改版），要点：
 - 点击联系人后校验右侧会话确实切换（防止限流时错发给上一个人）；
 - 列表点击失败时用搜索框兜底；
 - 检测"操作频繁 / 安全验证"等提示，命中即停本轮；
@@ -22,7 +22,7 @@ from .msg_builder import build_message
 from .runtime import load_runtime, update_runtime
 from .sender import creator_channel
 
-logger = logging.getLogger("douyin-cloud-streak")
+logger = logging.getLogger("better-douyin-streak")
 
 CHAT_URL = "https://www.douyin.com/chat"
 LOGIN_TEXTS = ["扫码登录", "验证码登录", "登录后查看", "登录后即可"]

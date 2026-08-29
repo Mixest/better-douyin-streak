@@ -13,7 +13,7 @@ import random
 from datetime import datetime
 from typing import List, Optional
 
-logger = logging.getLogger("douyin-cloud-streak")
+logger = logging.getLogger("better-douyin-streak")
 
 
 def render_template(template: str) -> str:

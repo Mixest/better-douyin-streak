@@ -38,7 +38,7 @@ def print_banner():
 
 def create_deploy_archive() -> Path:
     """通用全量打包：自动打包当前项目所有文件与目录"""
-    temp_tar = Path(tempfile.gettempdir()) / "douyin_cloud_streak_deploy.tar.gz"
+    temp_tar = Path(tempfile.gettempdir()) / "better_douyin_streak_deploy.tar.gz"
     
     print("[*] 正在全量打包项目文件 (包含所有模块、配置、前端与数据)...")
     with tarfile.open(temp_tar, "w:gz") as tar:
@@ -73,7 +73,7 @@ def main():
     server_user = input("👉 请输入 SSH 用户名 [直接回车默认 root]: ").strip() or "root"
     port_input = input("👉 请输入 SSH 端口号 [直接回车默认 22]: ").strip()
     server_port = int(port_input) if port_input.isdigit() else 22
-    remote_dir = input("👉 请输入部署路径 [直接回车默认 /opt/douyin-cloud-streak]: ").strip() or "/opt/douyin-cloud-streak"
+    remote_dir = input("👉 请输入部署路径 [直接回车默认 /opt/better-douyin-streak]: ").strip() or "/opt/better-douyin-streak"
 
     print("-" * 65)
     password = input("🔑 请输入服务器密码 (明文可见，支持右键直接粘贴): ").strip()
@@ -103,7 +103,7 @@ def main():
 
         # 1. 打包并极速上传
         archive_path = create_deploy_archive()
-        remote_tar = f"/tmp/douyin_cloud_streak_deploy.tar.gz"
+        remote_tar = f"/tmp/better_douyin_streak_deploy.tar.gz"
 
         print(f"[*] 正在将打包文件秒级上传至服务器 /tmp ...")
         sftp = ssh.open_sftp()

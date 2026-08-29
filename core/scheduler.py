@@ -15,7 +15,7 @@ from apscheduler.triggers.date import DateTrigger
 from .accounts import list_accounts
 from .config import DEFAULT_ACCOUNT_ID, load_config
 
-logger = logging.getLogger("douyin-cloud-streak")
+logger = logging.getLogger("better-douyin-streak")
 TZ = "Asia/Shanghai"
 
 _scheduler: BackgroundScheduler | None = None

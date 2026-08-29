@@ -20,7 +20,7 @@ from playwright.sync_api import sync_playwright
 from .accounts import acquire_browser_slot, release_browser_slot
 from .config import account_state_path, get_valid_state_path
 
-logger = logging.getLogger("douyin-cloud-streak")
+logger = logging.getLogger("better-douyin-streak")
 
 _CHROME_UA = (
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "

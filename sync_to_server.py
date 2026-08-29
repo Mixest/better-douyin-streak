@@ -2,7 +2,7 @@
 
 支持：
 1. 密码明文/可见输入（支持复制粘贴，输入什么显示什么，绝不盲敲！）；
-2. 自动检测并创建远程目录 /opt/douyin-cloud-streak/data；
+2. 自动检测并创建远程目录 /opt/better-douyin-streak/data；
 3. SSH/SFTP 直连上传；
 4. 发生异常时提供详细排查提示。
 """
@@ -63,7 +63,7 @@ def main():
     server_user = input("👉 请输入 SSH 登录用户名 [直接回车默认 root]: ").strip() or "root"
     port_input = input("👉 请输入 SSH 端口号 [直接回车默认 22]: ").strip()
     server_port = int(port_input) if port_input.isdigit() else 22
-    remote_dir = input("👉 请输入服务器部署路径 [直接回车默认 /opt/douyin-cloud-streak]: ").strip() or "/opt/douyin-cloud-streak"
+    remote_dir = input("👉 请输入服务器部署路径 [直接回车默认 /opt/better-douyin-streak]: ").strip() or "/opt/better-douyin-streak"
 
     # 明文可见输入密码！
     print("-" * 65)

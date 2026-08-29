@@ -17,7 +17,7 @@ from ..browser import open_browser
 from ..config import DEFAULT_ACCOUNT_ID, account_state_path, load_config
 from ..guard import detect_rate_limit
 
-logger = logging.getLogger("douyin-cloud-streak")
+logger = logging.getLogger("better-douyin-streak")
 
 CREATOR_CHAT_URL = "https://creator.douyin.com/creator-micro/data/following/chat"
 
