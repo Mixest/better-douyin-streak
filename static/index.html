@@ -1,0 +1,2199 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  <title>更好的抖音续火花 · Better Douyin Streak</title>
+  <link rel="stylesheet" href="/static/vendor/element-plus.css" />
+  <style>
+    /* ==========================================================================
+       现代浅色玻璃拟态设计体系 (Modern Light Glassmorphism)
+       抖音续火花 · 火焰橙 + 日光渐变 + 磨砂玻璃
+       ========================================================================== */
+    :root {
+      --bg: #eef1f8;
+      --text-main: #23283a;
+      --text-regular: #4b5368;
+      --text-muted: #8b93a9;
+      --text-faint: #b4bac9;
+
+      --glass-bg: rgba(255, 255, 255, 0.62);
+      --glass-bg-strong: rgba(255, 255, 255, 0.86);
+      --glass-border: rgba(255, 255, 255, 0.78);
+      --glass-border-dark: rgba(220, 226, 240, 0.85);
+      --glass-shadow: 0 12px 40px rgba(58, 76, 160, 0.10);
+      --glass-shadow-hover: 0 18px 50px rgba(58, 76, 160, 0.16);
+
+      --fire-1: #ffb03a;
+      --fire-2: #ff6a3d;
+      --fire-3: #ff2d55;
+      --violet: #7c5cff;
+      --cyan: #2bc8e8;
+      --green: #12b76a;
+      --red: #e5484d;
+      --amber: #f59e0b;
+
+      --grad-fire: linear-gradient(135deg, #ffb03a 0%, #ff6a3d 48%, #ff2d55 100%);
+      --grad-violet: linear-gradient(135deg, #8b6bff 0%, #6d5cff 100%);
+      --grad-cyan: linear-gradient(135deg, #43d6f5 0%, #2bc8e8 100%);
+      --grad-green: linear-gradient(135deg, #34d399 0%, #12b76a 100%);
+
+      --radius-lg: 22px;
+      --radius-md: 16px;
+      --radius-sm: 11px;
+      --radius-full: 999px;
+
+      --font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Segoe UI", Roboto, "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+
+      --el-color-primary: #ff6a3d;
+      --el-color-primary-light-3: #ff9a7a;
+      --el-color-primary-light-5: #ffb89f;
+      --el-color-primary-light-7: #ffd7c9;
+      --el-color-primary-light-8: #ffe4da;
+      --el-color-primary-light-9: #fff2ed;
+      --el-color-primary-dark-2: #e04f26;
+      --el-border-radius-base: 11px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      width: 100%;
+      max-width: 100vw;
+      overflow-x: hidden;
+      font-family: var(--font-family);
+      color: var(--text-main);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      line-height: 1.55;
+    }
+
+    body {
+      background-color: var(--bg);
+      background-image:
+        radial-gradient(58% 46% at 12% 8%, rgba(255, 176, 58, 0.16), transparent 60%),
+        radial-gradient(52% 44% at 88% 4%, rgba(124, 92, 255, 0.14), transparent 60%),
+        radial-gradient(56% 48% at 82% 92%, rgba(43, 200, 232, 0.13), transparent 60%),
+        radial-gradient(50% 42% at 10% 88%, rgba(255, 45, 85, 0.10), transparent 60%);
+      background-attachment: fixed;
+    }
+
+    /* 漂浮光斑 */
+    .bg-orb {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(70px);
+      opacity: 0.5;
+      pointer-events: none;
+      z-index: 0;
+      animation: orbFloat 18s ease-in-out infinite alternate;
+    }
+    .bg-orb-1 { width: 340px; height: 340px; top: -90px; left: -70px; background: radial-gradient(circle, rgba(255,176,58,0.55), transparent 70%); }
+    .bg-orb-2 { width: 300px; height: 300px; top: 20%; right: -110px; background: radial-gradient(circle, rgba(124,92,255,0.5), transparent 70%); animation-delay: -6s; }
+    .bg-orb-3 { width: 320px; height: 320px; bottom: -100px; left: 28%; background: radial-gradient(circle, rgba(43,200,232,0.45), transparent 70%); animation-delay: -12s; }
+    @keyframes orbFloat {
+      0%   { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(24px, -30px) scale(1.08); }
+    }
+
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(139,147,169,0.4); border-radius: var(--radius-full); }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(139,147,169,0.6); }
+
+    /* ==========================================================================
+       玻璃卡片基元
+       ========================================================================== */
+    .glass {
+      background: var(--glass-bg);
+      -webkit-backdrop-filter: blur(22px) saturate(180%);
+      backdrop-filter: blur(22px) saturate(180%);
+      border: 1px solid var(--glass-border);
+      box-shadow: var(--glass-shadow), inset 0 1px 0 rgba(255,255,255,0.75);
+      border-radius: var(--radius-lg);
+    }
+
+    .icon-svg { width: 17px; height: 17px; display: inline-block; vertical-align: -3px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+    .icon-svg.filled { fill: currentColor; stroke: none; }
+
+    /* ==========================================================================
+       顶部导航栏
+       ========================================================================== */
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(255,255,255,0.62);
+      -webkit-backdrop-filter: blur(22px) saturate(180%);
+      backdrop-filter: blur(22px) saturate(180%);
+      border-bottom: 1px solid var(--glass-border);
+      box-shadow: 0 6px 24px rgba(58,76,160,0.06);
+      width: 100%;
+    }
+    .topbar-inner {
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 0 18px;
+      height: 58px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .brand { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+    .brand-icon {
+      width: 34px; height: 34px;
+      border-radius: 11px;
+      background: var(--grad-fire);
+      color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 6px 16px rgba(255,106,61,0.4);
+      flex-shrink: 0;
+    }
+    .brand-icon .icon-svg { width: 19px; height: 19px; fill: currentColor; stroke: none; }
+    .brand-title { font-size: 15.5px; font-weight: 800; color: var(--text-main); letter-spacing: -0.01em; white-space: nowrap; }
+    .brand-sub { font-size: 11px; color: var(--text-muted); font-weight: 500; white-space: nowrap; }
+    .topbar-right { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+
+    .status-pill {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 4px 10px; border-radius: var(--radius-full);
+      font-size: 11.5px; font-weight: 600; white-space: nowrap;
+      border: 1px solid transparent;
+    }
+    .status-pill.status-ok { background: rgba(18,183,106,0.12); color: #0e8a52; border-color: rgba(18,183,106,0.22); }
+    .status-pill.status-bad { background: rgba(229,72,77,0.12); color: #c22f34; border-color: rgba(229,72,77,0.22); }
+    .status-dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; box-shadow: 0 0 0 3px rgba(255,255,255,0.4); }
+
+    .btn-icon-top {
+      width: 32px; height: 32px; border-radius: 10px;
+      border: 1px solid var(--glass-border-dark);
+      background: rgba(255,255,255,0.7);
+      color: var(--text-regular);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; padding: 0;
+      transition: all 0.18s ease;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .btn-icon-top:hover { background: #fff; color: var(--text-main); box-shadow: var(--glass-shadow); transform: translateY(-1px); }
+    .btn-icon-top:active { transform: translateY(0); }
+
+    /* ==========================================================================
+       布局
+       ========================================================================== */
+    .app-container {
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 22px 18px 48px;
+      width: 100%;
+      position: relative;
+      z-index: 1;
+    }
+    .shell {
+      display: grid;
+      grid-template-columns: 212px 1fr;
+      gap: 20px;
+      align-items: start;
+      width: 100%;
+    }
+
+    .side-nav {
+      position: sticky;
+      top: 78px;
+      display: flex; flex-direction: column; gap: 5px;
+      padding: 12px;
+    }
+    .nav-group-label {
+      font-size: 10.5px; font-weight: 700; letter-spacing: 0.08em;
+      color: var(--text-faint); text-transform: uppercase;
+      padding: 4px 10px 6px;
+    }
+    .nav-btn {
+      display: flex; align-items: center; gap: 11px;
+      padding: 10px 12px; border-radius: var(--radius-sm);
+      border: 1px solid transparent;
+      background: transparent;
+      color: var(--text-regular);
+      font-size: 13.5px; font-weight: 600;
+      cursor: pointer; text-align: left;
+      transition: all 0.18s ease;
+      white-space: nowrap; user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .nav-btn .icon { width: 17px; height: 17px; flex-shrink: 0; opacity: 0.9; }
+    .nav-btn:hover { background: rgba(255,255,255,0.7); color: var(--text-main); }
+    .nav-btn.active {
+      background: var(--grad-fire);
+      color: #fff;
+      box-shadow: 0 8px 20px rgba(255,106,61,0.38);
+      font-weight: 700;
+    }
+    .nav-btn.active .icon { opacity: 1; }
+
+    .main-view { display: flex; flex-direction: column; gap: 18px; width: 100%; min-width: 0; }
+    .main-view > div { display: flex; flex-direction: column; gap: 18px; }
+
+    /* ==========================================================================
+       卡片
+       ========================================================================== */
+    .card { padding: 20px 22px; width: 100%; }
+    .card-header {
+      display: flex; align-items: center; justify-content: space-between; gap: 12px;
+      margin-bottom: 16px; padding-bottom: 14px;
+      border-bottom: 1px solid rgba(220,226,240,0.7);
+    }
+    .card-title {
+      font-size: 15.5px; font-weight: 800; color: var(--text-main);
+      margin: 0; display: flex; align-items: center; gap: 8px; letter-spacing: -0.01em;
+    }
+    .card-desc { font-size: 12px; color: var(--text-muted); margin: 3px 0 0; line-height: 1.45; }
+
+    .icon-chip {
+      width: 30px; height: 30px; border-radius: 9px; flex-shrink: 0;
+      display: inline-flex; align-items: center; justify-content: center; color: #fff;
+      box-shadow: 0 6px 14px rgba(0,0,0,0.12);
+    }
+    .icon-chip .icon-svg { width: 16px; height: 16px; }
+    .icon-chip-fire   { background: var(--grad-fire); }
+    .icon-chip-violet { background: var(--grad-violet); }
+    .icon-chip-cyan   { background: var(--grad-cyan); }
+    .icon-chip-green  { background: var(--grad-green); }
+
+    /* ==========================================================================
+       Hero 面板
+       ========================================================================== */
+    .hero { position: relative; overflow: hidden; padding: 24px 26px; }
+    .hero::before {
+      content: "";
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(42% 90% at 88% 12%, rgba(255,176,58,0.22), transparent 62%),
+        radial-gradient(38% 90% at 12% 88%, rgba(255,45,85,0.14), transparent 60%);
+      pointer-events: none;
+    }
+    .hero-glow {
+      position: absolute; right: -40px; top: -70px; width: 220px; height: 220px;
+      background: radial-gradient(circle, rgba(255,176,58,0.35), transparent 70%);
+      filter: blur(26px); pointer-events: none;
+    }
+    .hero-inner { position: relative; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+    .hero-main { display: flex; align-items: center; gap: 16px; min-width: 0; }
+    .hero-icon {
+      width: 56px; height: 56px; border-radius: 18px; flex-shrink: 0;
+      background: var(--grad-fire); color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 12px 28px rgba(255,106,61,0.42);
+    }
+    .hero-icon .icon-svg { width: 30px; height: 30px; fill: currentColor; stroke: none; }
+    .hero-title { font-size: 21px; font-weight: 800; letter-spacing: -0.02em; color: var(--text-main); line-height: 1.2; }
+    .hero-sub { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+    .hero-chip {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 3px 10px; border-radius: var(--radius-full);
+      font-size: 11.5px; font-weight: 600; white-space: nowrap;
+      background: rgba(255,255,255,0.75); border: 1px solid var(--glass-border-dark); color: var(--text-regular);
+    }
+    .hero-chip .dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+    .hero-chip.chip-ok { color: #0e8a52; background: rgba(18,183,106,0.10); border-color: rgba(18,183,106,0.22); }
+    .hero-chip.chip-bad { color: #c22f34; background: rgba(229,72,77,0.10); border-color: rgba(229,72,77,0.22); }
+    .hero-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+
+    /* ==========================================================================
+       按钮体系
+       ========================================================================== */
+    .el-button { font-weight: 600 !important; }
+    .btn-grad {
+      background: var(--grad-fire) !important; color: #fff !important;
+      border: none !important; border-radius: var(--radius-sm) !important;
+      box-shadow: 0 8px 20px rgba(255,106,61,0.38) !important;
+      transition: all 0.18s ease !important;
+    }
+    .btn-grad:hover { box-shadow: 0 12px 26px rgba(255,106,61,0.5) !important; transform: translateY(-1px); }
+    .btn-grad.is-disabled { opacity: 0.6 !important; }
+    .btn-ghost {
+      background: rgba(255,255,255,0.7) !important; color: var(--text-regular) !important;
+      border: 1px solid var(--glass-border-dark) !important; border-radius: var(--radius-sm) !important;
+      box-shadow: 0 4px 12px rgba(58,76,160,0.06) !important;
+    }
+    .btn-ghost:hover { background: #fff !important; color: var(--text-main) !important; }
+
+    /* ==========================================================================
+       指标看板
+       ========================================================================== */
+    .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; width: 100%; }
+    .stat-box {
+      padding: 18px 20px;
+      display: flex; align-items: center; gap: 14px;
+      transition: all 0.2s ease;
+    }
+    .stat-box:hover { transform: translateY(-3px); box-shadow: var(--glass-shadow-hover); }
+    .stat-icon {
+      width: 46px; height: 46px; border-radius: 14px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center; color: #fff;
+      box-shadow: 0 8px 18px rgba(0,0,0,0.12);
+    }
+    .stat-icon .icon-svg { width: 22px; height: 22px; }
+    .stat-body { min-width: 0; }
+    .stat-label { font-size: 12px; font-weight: 600; color: var(--text-muted); }
+    .stat-value { font-size: 23px; font-weight: 800; font-variant-numeric: tabular-nums; color: var(--text-main); line-height: 1.15; display: flex; align-items: baseline; gap: 4px; }
+    .stat-value small { font-size: 12.5px; font-weight: 600; color: var(--text-muted); }
+    .stat-sub { font-size: 11px; color: var(--text-faint); margin-top: 3px; }
+
+    .grid-2 { display: grid; grid-template-columns: 1.45fr 1fr; gap: 18px; align-items: start; }
+
+    /* ==========================================================================
+       图表
+       ========================================================================== */
+    /* 近 14 天发送趋势折线图（Canvas 绘制，兼容性最佳） */
+    .line-chart-wrap { width: 100%; }
+    .trend-canvas { width: 100%; height: 190px; display: block; }
+    .chart-xlabels { display: flex; width: 100%; margin-top: 8px; }
+    .chart-xlabel-item { flex: 1; text-align: center; font-size: 10px; color: var(--text-faint); font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .legend { display: flex; gap: 14px; font-size: 11.5px; color: var(--text-muted); font-weight: 600; }
+    .legend i { display: inline-block; width: 9px; height: 9px; border-radius: 3px; margin-right: 5px; vertical-align: -1px; }
+    .legend .lg-ok { background: var(--grad-fire); }
+    .legend .lg-fail { background: #fca5a5; }
+
+    .dist-list { display: flex; flex-direction: column; gap: 12px; }
+    .dist-row { display: flex; align-items: center; gap: 10px; }
+    .dist-label { width: 66px; font-size: 12px; color: var(--text-regular); font-weight: 600; flex-shrink: 0; }
+    .dist-track { flex: 1; height: 22px; background: rgba(230,235,245,0.7); border-radius: var(--radius-sm); overflow: hidden; position: relative; }
+    .dist-fill {
+      height: 100%; border-radius: var(--radius-sm);
+      background: var(--grad-fire);
+      display: flex; align-items: center; justify-content: flex-end; padding-right: 8px;
+      transition: width 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+      min-width: 0;
+    }
+    .dist-fill-1 { background: linear-gradient(135deg, #ffb03a, #ff8a3d); }
+    .dist-fill-2 { background: var(--grad-violet); }
+    .dist-fill-3 { background: var(--grad-cyan); }
+    .dist-fill-4 { background: var(--grad-green); }
+    .dist-inner-count { font-size: 10.5px; font-weight: 700; color: rgba(255,255,255,0.95); }
+    .dist-count { width: 46px; font-size: 12px; color: var(--text-muted); font-weight: 600; text-align: right; flex-shrink: 0; }
+
+    /* ==========================================================================
+       排行榜 / 近期运行
+       ========================================================================== */
+    .top-list { display: flex; flex-direction: column; gap: 4px; }
+    .top-row {
+      display: flex; align-items: center; gap: 10px;
+      padding: 7px 8px; border-radius: var(--radius-sm);
+      transition: background 0.15s ease;
+    }
+    .top-row:hover { background: rgba(255,255,255,0.6); }
+    .rank {
+      width: 22px; height: 22px; border-radius: 7px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 800; color: var(--text-muted);
+      background: rgba(230,235,245,0.8);
+    }
+    .rank-0 { background: linear-gradient(135deg, #ffd76b, #ffb03a); color: #7c4d00; }
+    .rank-1 { background: linear-gradient(135deg, #dbe4f0, #b6c2d6); color: #4a5368; }
+    .rank-2 { background: linear-gradient(135deg, #f0c49b, #d9925a); color: #6d3f1d; }
+    .t-avatar { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; flex-shrink: 0; border: 1px solid var(--glass-border-dark); background: #f0f3f9; }
+    .t-avatar-ph {
+      display: flex; align-items: center; justify-content: center;
+      color: var(--text-regular); font-weight: 800; font-size: 13px;
+    }
+    .t-name { flex: 1; min-width: 0; font-size: 13px; font-weight: 600; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .spark-pill {
+      color: #d9501f; background: rgba(255,154,61,0.14);
+      border: 1px solid rgba(255,154,61,0.32);
+      padding: 2px 8px; border-radius: var(--radius-full);
+      font-size: 11px; font-weight: 700; white-space: nowrap;
+    }
+    .sel-tag { font-size: 10.5px; font-weight: 700; color: #0e8a52; background: rgba(18,183,106,0.12); padding: 2px 7px; border-radius: var(--radius-full); }
+
+    .run-list { display: flex; flex-direction: column; gap: 6px; }
+    .run-row {
+      display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+      padding: 8px 10px; border-radius: var(--radius-sm);
+      background: rgba(255,255,255,0.5); border: 1px solid rgba(220,226,240,0.6);
+    }
+    .run-time { font-size: 11.5px; color: var(--text-muted); font-weight: 600; font-variant-numeric: tabular-nums; }
+    .run-badge { font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: var(--radius-full); white-space: nowrap; }
+    .run-ok   { color: #0e8a52; background: rgba(18,183,106,0.12); }
+    .run-fail { color: #c22f34; background: rgba(229,72,77,0.12); }
+    .run-skip { color: #92630b; background: rgba(245,158,11,0.14); }
+    .run-dry  { color: #6d5cff; background: rgba(124,92,255,0.12); }
+    .run-warn { color: #c22f34; background: rgba(229,72,77,0.14); }
+
+    .empty-state {
+      text-align: center; padding: 26px 10px;
+      color: var(--text-faint); font-size: 12.5px;
+    }
+
+    /* ==========================================================================
+       好友列表
+       ========================================================================== */
+    .desktop-only-table { display: block; }
+    .mobile-only-cards { display: none; }
+
+    .table-box {
+      border: 1px solid var(--glass-border-dark); border-radius: var(--radius-md);
+      overflow: hidden; background: rgba(255,255,255,0.55);
+      -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
+      width: 100%;
+    }
+    .el-table {
+      --el-table-bg-color: transparent !important;
+      --el-table-tr-bg-color: transparent !important;
+      --el-table-header-bg-color: rgba(244,246,252,0.9) !important;
+      --el-table-row-hover-bg-color: rgba(255,255,255,0.75) !important;
+      --el-table-border-color: rgba(220,226,240,0.6) !important;
+      --el-table-text-color: var(--text-regular) !important;
+      --el-table-header-text-color: var(--text-muted) !important;
+      font-size: 13.5px;
+    }
+
+    .contact-card-row {
+      display: flex; align-items: center; gap: 12px;
+      background: rgba(255,255,255,0.66);
+      border: 1px solid var(--glass-border-dark);
+      border-radius: var(--radius-md);
+      padding: 11px 14px;
+      transition: all 0.18s ease;
+      user-select: none; -webkit-tap-highlight-color: transparent;
+      cursor: pointer; width: 100%;
+      box-shadow: 0 4px 12px rgba(58,76,160,0.05);
+    }
+    .contact-card-row:active { background: #fff; }
+    .contact-card-row.is-selected {
+      border-color: rgba(255,106,61,0.55);
+      background: rgba(255,255,255,0.9);
+      box-shadow: 0 0 0 1px rgba(255,106,61,0.4), 0 6px 16px rgba(255,106,61,0.10);
+    }
+    .chk-wrap { display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .avatar-badge {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: linear-gradient(135deg, #e9edf7, #dbe3f2); color: #5b6478;
+      font-weight: 800; font-size: 14px;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+      border: 1px solid var(--glass-border-dark);
+    }
+    .contact-avatar-img, .table-avatar {
+      width: 36px; height: 36px; border-radius: 50%; object-fit: cover;
+      flex-shrink: 0; border: 1px solid var(--glass-border-dark); background: #eef1f8;
+    }
+    .user-meta { display: flex; flex-direction: column; gap: 2px; flex: 1; min-width: 0; }
+    .user-name { font-size: 14px; font-weight: 700; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .user-sub { font-size: 11.5px; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .pill-group { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+    .no-spark-pill { color: var(--text-faint); background: rgba(230,235,245,0.8); border: 1px solid var(--glass-border-dark); padding: 2px 8px; border-radius: var(--radius-full); font-size: 11px; }
+    .status-pill-sub { font-size: 11px; padding: 2px 8px; border-radius: var(--radius-full); font-weight: 700; white-space: nowrap; }
+    .status-pill-sub.success { background: rgba(18,183,106,0.12); color: #0e8a52; }
+    .status-pill-sub.failed { background: rgba(229,72,77,0.12); color: #c22f34; }
+    .status-pill-sub.pending { background: rgba(139,147,169,0.12); color: var(--text-muted); }
+
+    /* 账号卡片 */
+    .acct-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 14px; }
+    .acct-card { padding: 16px 18px; display: flex; flex-direction: column; gap: 10px; cursor: pointer; }
+    .acct-card.is-current {
+      border-color: rgba(255,106,61,0.5);
+      box-shadow: 0 0 0 1px rgba(255,106,61,0.35), var(--glass-shadow);
+    }
+    .acct-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    .acct-name { font-weight: 800; font-size: 14px; color: var(--text-main); display: flex; align-items: center; gap: 6px; }
+    .acct-default { font-size: 10.5px; color: #0e8a52; background: rgba(18,183,106,0.12); padding: 1px 7px; border-radius: var(--radius-full); font-weight: 700; }
+    .acct-meta { font-size: 12px; color: var(--text-muted); display: flex; flex-direction: column; gap: 3px; }
+    .acct-meta code { background: rgba(230,235,245,0.8); padding: 0 5px; border-radius: 5px; font-size: 11px; }
+    .acct-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+
+    /* 凭证状态盒 */
+    .cred-box {
+      padding: 16px 18px; border-radius: var(--radius-md);
+      background: rgba(255,255,255,0.6); border: 1px solid var(--glass-border-dark);
+    }
+
+    /* ==========================================================================
+       日志终端
+       ========================================================================== */
+    .terminal-box {
+      background: linear-gradient(180deg, #1c2333, #141a28);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: var(--radius-md);
+      overflow: hidden; width: 100%;
+      box-shadow: 0 14px 34px rgba(20,26,40,0.24);
+    }
+    .terminal-header {
+      background: rgba(255,255,255,0.05);
+      padding: 9px 16px; display: flex; align-items: center; justify-content: space-between;
+      color: #8b93a9; font-size: 12px; font-family: var(--font-mono);
+    }
+    .terminal-body {
+      margin: 0; padding: 15px;
+      font-family: var(--font-mono); font-size: 12.5px; line-height: 1.65;
+      color: #dbe2f0; height: 400px; overflow-y: auto;
+      white-space: pre-wrap; word-break: break-all;
+    }
+    .terminal-body::-webkit-scrollbar-thumb { background: rgba(139,147,169,0.35); }
+
+    /* ==========================================================================
+       Element Plus 玻璃化适配
+       ========================================================================== */
+    .el-dialog {
+      background: rgba(255,255,255,0.9) !important;
+      -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
+      backdrop-filter: blur(24px) saturate(180%) !important;
+      border: 1px solid var(--glass-border) !important;
+      border-radius: var(--radius-lg) !important;
+      box-shadow: 0 24px 70px rgba(58,76,160,0.22) !important;
+    }
+    .el-dialog__title { font-weight: 800 !important; color: var(--text-main) !important; }
+    .el-input__wrapper, .el-textarea__inner {
+      background: rgba(255,255,255,0.85) !important;
+      border: 1px solid var(--glass-border-dark) !important;
+      box-shadow: 0 2px 10px rgba(58,76,160,0.04) inset !important;
+      border-radius: var(--radius-sm) !important;
+      color: var(--text-main) !important; font-size: 14px;
+    }
+    .el-input__wrapper.is-focus { border-color: rgba(255,106,61,0.5) !important; }
+    .el-form-item__label { color: var(--text-main) !important; font-weight: 600; font-size: 13px; }
+    .el-button { border-radius: var(--radius-sm) !important; }
+    .el-select__wrapper { background: rgba(255,255,255,0.8) !important; border: 1px solid var(--glass-border-dark) !important; box-shadow: none !important; border-radius: var(--radius-sm) !important; }
+    .el-checkbox__inner { border-radius: 6px !important; }
+    .el-checkbox__input.is-checked .el-checkbox__inner { background: var(--grad-fire) !important; border-color: var(--fire-2) !important; }
+
+    /* ==========================================================================
+       动效体系 (Motion Design)
+       ========================================================================== */
+    /* 页面 / Tab 切换：wrapper 与内部卡片错峰入场（切换时 v-show 触发重放） */
+    .main-view > div {
+      animation: pageIn 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+    .main-view > div > * {
+      animation: riseIn 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+    .main-view > div > *:nth-child(1) { animation-delay: 0.04s; }
+    .main-view > div > *:nth-child(2) { animation-delay: 0.12s; }
+    .main-view > div > *:nth-child(3) { animation-delay: 0.20s; }
+    .main-view > div > *:nth-child(4) { animation-delay: 0.28s; }
+    .main-view > div > *:nth-child(5) { animation-delay: 0.36s; }
+    .main-view > div > *:nth-child(6) { animation-delay: 0.44s; }
+    @keyframes pageIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+    @keyframes riseIn {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: none; }
+    }
+
+    /* 品牌图标：柔和呼吸辉光 */
+    .brand-icon {
+      animation: brandPulse 3.2s ease-in-out infinite;
+    }
+    @keyframes brandPulse {
+      0%, 100% { box-shadow: 0 6px 16px rgba(255, 106, 61, 0.40); transform: scale(1); }
+      50%      { box-shadow: 0 6px 26px rgba(255, 106, 61, 0.68); transform: scale(1.05); }
+    }
+
+    /* 状态点：呼吸 */
+    .status-dot {
+      animation: dotPulse 1.8s ease-in-out infinite;
+    }
+    @keyframes dotPulse {
+      0%, 100% { opacity: 1; }
+      50%      { opacity: 0.45; transform: scale(0.82); }
+    }
+
+    /* Hero 火焰：轻微摇曳 */
+    .hero-icon {
+      animation: flameFlicker 2.6s ease-in-out infinite;
+    }
+    @keyframes flameFlicker {
+      0%, 100% { transform: scale(1) rotate(0deg); }
+      25%      { transform: scale(1.07) rotate(-2deg); }
+      50%      { transform: scale(0.97) rotate(1.5deg); }
+      75%      { transform: scale(1.05) rotate(-1deg); }
+    }
+
+    /* 导航项悬停：轻推 */
+    .nav-btn:hover { transform: translateX(3px); }
+
+    /* 主按钮：悬停流光扫过 */
+    .btn-grad {
+      position: relative;
+      overflow: hidden;
+    }
+    .btn-grad::after {
+      content: "";
+      position: absolute;
+      top: 0; left: -70%;
+      width: 45%; height: 100%;
+      background: linear-gradient(105deg, transparent, rgba(255, 255, 255, 0.55), transparent);
+      transform: skewX(-20deg);
+      transition: left 0.55s ease;
+      pointer-events: none;
+    }
+    .btn-grad:hover::after { left: 130%; }
+    .el-button:active { transform: scale(0.97); }
+
+    /* 指标卡图标：悬停弹跳 */
+    .stat-box:hover .stat-icon {
+      animation: iconBounce 0.5s ease;
+    }
+    @keyframes iconBounce {
+      0%   { transform: scale(1); }
+      40%  { transform: scale(1.14); }
+      100% { transform: scale(1); }
+    }
+    .stat-box:hover { transform: translateY(-3px) !important; }
+
+    /* 好友卡片：悬停上浮 */
+    .contact-card-row:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 24px rgba(58, 76, 160, 0.14);
+    }
+    .contact-card-row:active { transform: translateY(0); }
+
+    /* 分布条形：从 0 生长 */
+    .dist-fill {
+      animation: barGrow 0.85s cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+    @keyframes barGrow {
+      from { width: 0; }
+      to   { width: var(--w, 100%); }
+    }
+
+    /* 排行榜行：错峰淡入 */
+    .top-row {
+      animation: rowIn 0.45s ease both;
+    }
+    .top-row:nth-child(1) { animation-delay: 0.02s; }
+    .top-row:nth-child(2) { animation-delay: 0.07s; }
+    .top-row:nth-child(3) { animation-delay: 0.12s; }
+    .top-row:nth-child(4) { animation-delay: 0.17s; }
+    .top-row:nth-child(5) { animation-delay: 0.22s; }
+    .top-row:nth-child(6) { animation-delay: 0.27s; }
+    @keyframes rowIn {
+      from { opacity: 0; transform: translateX(-8px); }
+      to   { opacity: 1; transform: none; }
+    }
+
+    /* 尊重系统减弱动态设置 */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.001s !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.001s !important;
+      }
+    }
+
+    /* ==========================================================================
+       移动端
+       ========================================================================== */
+    @media (max-width: 900px) {
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+      .grid-2 { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 768px) {
+      .app-container { padding: 12px 10px calc(84px + env(safe-area-inset-bottom)) 10px; }
+      .shell { grid-template-columns: 1fr; gap: 12px; }
+
+      .topbar-inner { height: 54px; padding: 0 12px; }
+      .brand-sub { display: none; }
+      .topbar-right .el-select { width: 108px !important; }
+
+      .side-nav {
+        position: fixed !important; bottom: 0 !important; left: 0 !important; right: 0 !important;
+        width: 100vw !important; max-width: 100vw !important; z-index: 9999 !important;
+        border-radius: 20px 20px 0 0 !important;
+        border: none !important; border-top: 1px solid var(--glass-border) !important;
+        background: rgba(255,255,255,0.82) !important;
+        -webkit-backdrop-filter: blur(22px) saturate(180%) !important;
+        backdrop-filter: blur(22px) saturate(180%) !important;
+        padding: 8px 10px calc(8px + env(safe-area-inset-bottom)) 10px !important;
+        box-shadow: 0 -10px 34px rgba(58,76,160,0.14) !important;
+        flex-direction: row !important; justify-content: space-around !important;
+        gap: 4px !important; top: auto !important;
+      }
+      .nav-group-label { display: none; }
+      .nav-btn {
+        flex-direction: column; gap: 3px; padding: 6px 2px;
+        font-size: 11px; text-align: center; align-items: center;
+        flex: 1; border-radius: var(--radius-sm);
+      }
+      .nav-btn .icon { width: 18px; height: 18px; }
+      .nav-btn.active { background: var(--grad-fire); color: #fff; box-shadow: 0 6px 16px rgba(255,106,61,0.35); }
+
+      .desktop-only-table { display: none !important; }
+      .mobile-only-cards { display: flex !important; flex-direction: column; gap: 9px; max-height: 480px; overflow-y: auto; -webkit-overflow-scrolling: touch; padding-bottom: 6px; }
+
+      .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+      .stat-box { padding: 14px 14px; gap: 11px; }
+      .stat-icon { width: 40px; height: 40px; border-radius: 12px; }
+      .stat-icon .icon-svg { width: 19px; height: 19px; }
+      .stat-value { font-size: 19px; }
+
+      .card { padding: 15px 15px; border-radius: var(--radius-md); }
+      .card-header { flex-direction: column; align-items: stretch; gap: 12px; margin-bottom: 12px; }
+      .hero { padding: 18px 18px; }
+      .hero-icon { width: 46px; height: 46px; border-radius: 14px; }
+      .hero-icon .icon-svg { width: 24px; height: 24px; }
+      .hero-title { font-size: 18px; }
+      .hero-actions .el-button { margin: 0 !important; }
+
+      .mobile-action-grid { display: grid !important; grid-template-columns: repeat(2, 1fr) !important; gap: 8px !important; width: 100% !important; }
+      .mobile-action-grid .el-button { margin: 0 !important; width: 100% !important; height: 38px !important; font-size: 13px !important; }
+      .mobile-full-btn { width: 100% !important; margin: 0 !important; }
+
+      .trend-canvas { height: 150px; }
+      .chart-xlabel-item.hide-sm { visibility: hidden; }
+
+      .terminal-body { height: 280px; font-size: 11.5px; padding: 11px; }
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <!-- 背景光斑 -->
+    <div class="bg-orb bg-orb-1"></div>
+    <div class="bg-orb bg-orb-2"></div>
+    <div class="bg-orb bg-orb-3"></div>
+
+    <!-- 顶部导航栏 -->
+    <header class="topbar">
+      <div class="topbar-inner">
+        <div class="brand">
+          <div class="brand-icon" v-html="ICONS.fire" aria-hidden="true"></div>
+          <div style="display: flex; flex-direction: column; line-height: 1.2;">
+            <span class="brand-title">更好的抖音续火花</span>
+            <span class="brand-sub">Better Douyin Streak</span>
+          </div>
+        </div>
+        <div class="topbar-right">
+          <el-select
+            v-model="currentAccountId"
+            size="small"
+            placeholder="选择账号"
+            style="width: 138px; flex-shrink: 0;"
+            @change="switchAccount"
+          >
+            <el-option
+              v-for="acc in accounts"
+              :key="acc.id"
+              :label="(acc.is_default ? '★ ' : '') + acc.name"
+              :value="acc.id"
+            />
+          </el-select>
+          <span class="status-pill" :class="status.state_file_exists ? 'status-ok' : 'status-bad'">
+            <span class="status-dot"></span>
+            {{ status.state_file_exists ? '已就绪' : '未登录' }}
+          </span>
+          <el-button v-if="status.running" size="small" type="danger" plain @click="resetRunningState" style="padding: 0 8px; height: 26px; font-size: 11px;">
+            强制重置
+          </el-button>
+          <button type="button" class="btn-icon-top" title="刷新状态" @click="loadAll">
+            <span class="icon-svg" v-html="ICONS.reload"></span>
+          </button>
+          <button type="button" class="btn-icon-top" title="安全令牌" @click="showTokenDialog">
+            <span class="icon-svg" v-html="ICONS.key"></span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- 主体容器 -->
+    <div class="app-container">
+      <div class="shell">
+        <!-- 侧边 / 底部导航栏 -->
+        <nav class="side-nav glass" aria-label="功能导航">
+          <div class="nav-group-label">控制台</div>
+          <button
+            v-for="item in navItems"
+            :key="item.name"
+            type="button"
+            class="nav-btn"
+            :class="{ active: tab === item.name }"
+            @click="tab = item.name"
+          >
+            <span class="icon" v-html="ICONS[item.icon]" aria-hidden="true"></span>
+            <span>{{ item.label }}</span>
+          </button>
+        </nav>
+
+        <!-- 主视图区 -->
+        <main class="main-view">
+
+          <!-- 0. 账号管理页 -->
+          <div v-show="tab === 'accounts'">
+            <div class="card glass">
+              <div class="card-header">
+                <div>
+                  <h3 class="card-title">
+                    <span class="icon-chip icon-chip-violet" v-html="ICONS.users"></span>
+                    多账号管理
+                  </h3>
+                  <p class="card-desc">每个账号拥有独立的登录凭证、配置与好友台账，互不干扰；全局最多 {{ maxConcurrent }} 个浏览器并发运行。</p>
+                </div>
+                <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                  <el-button type="primary" size="small" class="btn-grad" @click="accountDialogVisible = true">
+                    + 新建账号
+                  </el-button>
+                  <el-button size="small" class="btn-ghost" @click="loadAccounts">刷新</el-button>
+                </div>
+              </div>
+
+              <div v-if="accounts.length === 0" class="empty-state">
+                暂无账号，点击「新建账号」添加第一个账号。
+              </div>
+
+              <div class="acct-grid">
+                <div
+                  v-for="acc in accounts"
+                  :key="acc.id"
+                  class="contact-card-row acct-card"
+                  :class="{ 'is-current': currentAccountId === acc.id }"
+                  @click="switchAccount(acc.id)"
+                >
+                  <div class="acct-top">
+                    <div class="acct-name">
+                      {{ acc.is_default ? '★ ' : '' }}{{ acc.name }}
+                      <span v-if="acc.is_default" class="acct-default">默认</span>
+                    </div>
+                    <el-switch
+                      v-model="acc.enabled"
+                      :disabled="acc.is_default"
+                      active-text="启用"
+                      inactive-text="停用"
+                      style="transform: scale(0.85);"
+                      @change.stop="updateAccountMeta(acc)"
+                    />
+                  </div>
+
+                  <div class="acct-meta">
+                    <div>账号 ID：<code>{{ acc.id }}</code></div>
+                    <div>登录态：{{ acc.state_file_exists ? '✓ 已就绪' : '✗ 未上传' }}</div>
+                    <div>会话状态：{{ sessionText(acc) }}</div>
+                    <div v-if="acc.next_run">下次定时：{{ formatDateTime(acc.next_run) }}</div>
+                    <div v-if="acc.device">备注：{{ acc.device }}</div>
+                  </div>
+
+                  <div class="acct-actions" @click.stop>
+                    <el-button size="small" :type="currentAccountId === acc.id ? 'primary' : 'default'" @click="switchAccount(acc.id)">
+                      {{ currentAccountId === acc.id ? '当前查看' : '切换到此账号' }}
+                    </el-button>
+                    <el-button v-if="!acc.is_default" size="small" type="danger" plain @click="removeAccount(acc)">
+                      删除
+                    </el-button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="card glass">
+              <div class="card-header">
+                <div>
+                  <h3 class="card-title">
+                    <span class="icon-chip icon-chip-cyan" v-html="ICONS.shield"></span>
+                    全局并发状态
+                  </h3>
+                  <p class="card-desc">同时运行的浏览器会话数受全局上限保护，超出后新任务会自动排队等待。</p>
+                </div>
+              </div>
+              <div style="font-size: 13px; color: var(--text-regular);">
+                并发上限：<strong>{{ maxConcurrent }}</strong> 个浏览器会话
+                <span style="margin: 0 8px; color: var(--text-faint);">·</span>
+                当前可用：<strong>{{ browserSlotsAvailable }}</strong>
+              </div>
+            </div>
+          </div>
+
+          <!-- 1. 运行概览页 -->
+          <div v-show="tab === 'overview'">
+            <!-- Hero 面板 -->
+            <section class="hero glass">
+              <div class="hero-glow"></div>
+              <div class="hero-inner">
+                <div class="hero-main">
+                  <div class="hero-icon" v-html="ICONS.fire"></div>
+                  <div style="min-width: 0;">
+                    <div class="hero-title">{{ currentAccount.name }}</div>
+                    <div class="hero-sub">
+                      <span class="hero-chip" :class="status.state_file_exists ? 'chip-ok' : 'chip-bad'">
+                        <span class="dot"></span>{{ status.state_file_exists ? '登录已就绪' : '未检测到登录凭证' }}
+                      </span>
+                      <span class="hero-chip">{{ sessionStatusText }}</span>
+                      <span v-if="status.next_run" class="hero-chip">⏰ 下次定时 {{ formatDateTime(status.next_run) }}</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="hero-actions">
+                  <el-button class="btn-grad" :disabled="status.running" @click="runStreak(false)">
+                    <span class="icon-svg" style="margin-right: 5px; fill: currentColor; stroke: none; width: 15px; height: 15px;" v-html="ICONS.fire"></span>
+                    {{ status.running ? '任务执行中...' : '立即续火花' }}
+                  </el-button>
+                  <el-button class="btn-ghost" :disabled="status.running" @click="runStreak(true)">模拟演练</el-button>
+                </div>
+              </div>
+            </section>
+
+            <!-- 未检测到登录凭证时的醒目指引 -->
+            <div v-if="!status.state_file_exists" class="card glass" style="border-color: rgba(229,72,77,0.35); background: linear-gradient(135deg, rgba(255,241,242,0.8), rgba(255,255,255,0.6));">
+              <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap;">
+                <div style="font-size: 13px; color: #b8353a; line-height: 1.6;">
+                  <strong>⚠️ 当前账号未检测到登录凭证 (state.json)：</strong><br />
+                  请在「凭证」页手机扫码登录，或在电脑端双击 <code>4.同步登录态到服务器.bat</code> 一键同步，也可直接上传文件。
+                </div>
+                <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                  <input type="file" ref="quickFileInput" accept=".json" style="display: none;" @change="handleFileUpload" />
+                  <el-button type="danger" size="small" @click="goToCredentials">去扫码登录</el-button>
+                  <el-button type="danger" size="small" plain @click="$refs.quickFileInput.click()">上传 state.json</el-button>
+                </div>
+              </div>
+            </div>
+
+            <!-- 指标看板 -->
+            <div class="stats-grid">
+              <div class="stat-box glass">
+                <div class="stat-icon" style="background: var(--grad-fire);">
+                  <span class="icon-svg filled" v-html="ICONS.users"></span>
+                </div>
+                <div class="stat-body">
+                  <div class="stat-label">已勾选好友</div>
+                  <div class="stat-value">
+                    {{ animVals.selected }}
+                    <small>/ {{ totalContactCount }} 位</small>
+                  </div>
+                  <div class="stat-sub">每日定时发送目标</div>
+                </div>
+              </div>
+              <div class="stat-box glass">
+                <div class="stat-icon" style="background: var(--grad-violet);">
+                  <span class="icon-svg" v-html="ICONS.fire"></span>
+                </div>
+                <div class="stat-body">
+                  <div class="stat-label">火花好友</div>
+                  <div class="stat-value">
+                    {{ animVals.spark }}
+                    <small>人</small>
+                  </div>
+                  <div class="stat-sub">平均 {{ dashboard.summary.avg_streak || 0 }} 天</div>
+                </div>
+              </div>
+              <div class="stat-box glass">
+                <div class="stat-icon" style="background: var(--grad-cyan);">
+                  <span class="icon-svg" v-html="ICONS.trophy"></span>
+                </div>
+                <div class="stat-body">
+                  <div class="stat-label">最长火花</div>
+                  <div class="stat-value">
+                    {{ animVals.max }}
+                    <small>天</small>
+                  </div>
+                  <div class="stat-sub">坚持不懈的火花</div>
+                </div>
+              </div>
+              <div class="stat-box glass">
+                <div class="stat-icon" style="background: var(--grad-green);">
+                  <span class="icon-svg" v-html="ICONS.zap"></span>
+                </div>
+                <div class="stat-body">
+                  <div class="stat-label">累计发送成功</div>
+                  <div class="stat-value">
+                    {{ animVals.ok }}
+                    <small>次</small>
+                  </div>
+                  <div class="stat-sub">失败 {{ dashboard.summary.failed_sends_total || 0 }} · 共 {{ dashboard.summary.runs_total || 0 }} 次执行</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 趋势 + 分布 -->
+            <div class="grid-2">
+              <div class="card glass">
+                <div class="card-header">
+                  <div>
+                    <h3 class="card-title">
+                      <span class="icon-chip icon-chip-fire" v-html="ICONS.trend"></span>
+                      近 14 天发送趋势
+                    </h3>
+                    <p class="card-desc">每日成功 / 失败发送的人数</p>
+                  </div>
+                  <div class="legend">
+                    <span><i class="lg-ok"></i>成功</span>
+                    <span><i class="lg-fail"></i>失败</span>
+                  </div>
+                </div>
+                <div v-if="trendData.length" class="line-chart-wrap">
+                  <canvas ref="trendCanvas" class="trend-canvas"></canvas>
+                  <div class="chart-xlabels">
+                    <span v-for="(x, i) in trendData" :key="i" class="chart-xlabel-item" :class="{ 'hide-sm': i % 2 !== 0 }">{{ x.label }}</span>
+                  </div>
+                </div>
+                <div v-else class="empty-state">暂无发送记录，执行一次任务后这里会展示趋势</div>
+              </div>
+
+              <div class="card glass">
+                <div class="card-header">
+                  <div>
+                    <h3 class="card-title">
+                      <span class="icon-chip icon-chip-violet" v-html="ICONS.chart"></span>
+                      火花天数分布
+                    </h3>
+                    <p class="card-desc">好友火花天数区间统计</p>
+                  </div>
+                </div>
+                <div class="dist-list">
+                  <div v-for="(b, i) in (dashboard.distribution || [])" :key="b.key" class="dist-row">
+                    <span class="dist-label">{{ b.label }}</span>
+                    <div class="dist-track">
+                      <div class="dist-fill" :class="'dist-fill-' + i" :style="{ '--w': distPct(b.count) + '%', width: distPct(b.count) + '%' }">
+                        <span v-if="b.count" class="dist-inner-count">{{ b.count }}</span>
+                      </div>
+                    </div>
+                    <span class="dist-count">{{ b.count }} 人</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Top 火花 + 近期运行 -->
+            <div class="grid-2">
+              <div class="card glass">
+                <div class="card-header">
+                  <div>
+                    <h3 class="card-title">
+                      <span class="icon-chip icon-chip-fire" v-html="ICONS.trophy"></span>
+                      火花排行榜
+                    </h3>
+                    <p class="card-desc">火花天数最长的好友 Top 8</p>
+                  </div>
+                </div>
+                <div class="top-list">
+                  <div v-for="(c, i) in (dashboard.top_streaks || [])" :key="c.display_name" class="top-row">
+                    <span class="rank" :class="'rank-' + i">{{ i + 1 }}</span>
+                    <img v-if="c.avatar" :src="c.avatar" class="t-avatar" alt="" @error="c.avatar = ''" />
+                    <div v-else class="t-avatar t-avatar-ph">{{ (c.display_name || '?').charAt(0) }}</div>
+                    <div class="t-name">{{ c.display_name }}</div>
+                    <span class="spark-pill">🔥 {{ c.streak_days }} 天</span>
+                    <span v-if="c.selected" class="sel-tag">已勾选</span>
+                  </div>
+                  <div v-if="!(dashboard.top_streaks || []).length" class="empty-state">同步联系人后展示火花排行</div>
+                </div>
+              </div>
+
+              <div class="card glass">
+                <div class="card-header">
+                  <div>
+                    <h3 class="card-title">
+                      <span class="icon-chip icon-chip-cyan" v-html="ICONS.clock"></span>
+                      近期运行记录
+                    </h3>
+                    <p class="card-desc">最近 {{ (dashboard.recent_runs || []).length }} 次自动执行结果</p>
+                  </div>
+                </div>
+                <div class="run-list">
+                  <div v-for="(r, i) in (dashboard.recent_runs || [])" :key="i" class="run-row">
+                    <span class="run-time">{{ formatDateTime(r.at) }}</span>
+                    <span v-if="r.ok" class="run-badge run-ok">✓ {{ r.ok }} 成功</span>
+                    <span v-if="r.failed" class="run-badge run-fail">✗ {{ r.failed }} 失败</span>
+                    <span v-if="r.skipped" class="run-badge run-skip">↷ {{ r.skipped }} 跳过</span>
+                    <span v-if="r.dry_run" class="run-badge run-dry">演练</span>
+                    <span v-if="r.logged_out" class="run-badge run-warn">登录失效</span>
+                    <span v-if="r.rate_limited" class="run-badge run-warn">限流</span>
+                  </div>
+                  <div v-if="!(dashboard.recent_runs || []).length" class="empty-state">暂无运行记录</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 2. 好友与台账页 -->
+          <div v-show="tab === 'friends'">
+            <div class="card glass">
+              <div class="card-header">
+                <div>
+                  <h3 class="card-title">
+                    <span class="icon-chip icon-chip-fire" v-html="ICONS.users"></span>
+                    好友与消息台账
+                  </h3>
+                  <p class="card-desc">自动同步抖音好友列表，一键勾选火花好友，保存后每日定时自动发送。</p>
+                </div>
+                <div class="mobile-action-grid" style="display: flex; gap: 8px; flex-wrap: wrap;">
+                  <el-button type="primary" size="small" class="btn-grad" :loading="syncing" @click="syncContacts">
+                    同步联系人
+                  </el-button>
+                  <el-button size="small" class="btn-ghost" @click="autoSelectSparkFriends">一键勾选火花</el-button>
+                  <el-button size="small" class="btn-ghost" @click="clearSelectedFriends">清空勾选</el-button>
+                  <el-button type="success" size="small" :loading="savingLedger" @click="saveLedgerSelection">保存勾选配置</el-button>
+                </div>
+              </div>
+
+              <div style="margin-bottom: 14px; display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+                <el-input
+                  v-model="searchKeyword"
+                  placeholder="搜索好友昵称或火花天数..."
+                  clearable
+                  size="small"
+                  style="flex: 1; min-width: 200px;"
+                />
+                <div style="font-size: 12.5px; color: var(--text-muted); white-space: nowrap;">
+                  已勾选 <strong style="color: var(--text-main);">{{ selectedFriendCount }}</strong> 位好友
+                </div>
+              </div>
+
+              <!-- 桌面端表格 (屏幕宽度 >= 769px) -->
+              <div class="table-box desktop-only-table">
+                <el-table :data="filteredContacts" style="width: 100%;" max-height="520">
+                  <el-table-column width="55" align="center">
+                    <template #default="{ row }">
+                      <el-checkbox v-model="row.selected" />
+                    </template>
+                  </el-table-column>
+                  <el-table-column prop="nickname" label="好友昵称" min-width="180">
+                    <template #default="{ row }">
+                      <div style="display: flex; align-items: center; gap: 10px;">
+                        <img v-if="row.avatar" :src="row.avatar" class="table-avatar" alt="" @error="row.avatar = ''" />
+                        <span v-else class="avatar-badge" style="display: inline-flex;">{{ (row.nickname || '?').charAt(0) }}</span>
+                        <span style="font-weight: 600; color: var(--text-main);">{{ row.nickname }}</span>
+                      </div>
+                    </template>
+                  </el-table-column>
+                  <el-table-column prop="spark_days" label="火花天数" width="130" sortable>
+                    <template #default="{ row }">
+                      <span v-if="row.spark_days && row.spark_days > 0" class="spark-pill">🔥 {{ row.spark_days }} 天</span>
+                      <span v-else style="color: var(--text-faint); font-size: 12px;">未点亮</span>
+                    </template>
+                  </el-table-column>
+                  <el-table-column prop="last_status" label="最近状态" width="130">
+                    <template #default="{ row }">
+                      <el-tag v-if="row.last_status === 'success'" type="success" size="small">成功</el-tag>
+                      <el-tag v-else-if="row.last_status === 'failed'" type="danger" size="small">失败</el-tag>
+                      <el-tag v-else type="info" size="small">待发送</el-tag>
+                    </template>
+                  </el-table-column>
+                  <el-table-column prop="last_sent_at" label="最后发送时间" width="170">
+                    <template #default="{ row }">
+                      <span style="font-size: 12px; color: var(--text-muted);">{{ formatTime(row.last_sent_at) }}</span>
+                    </template>
+                  </el-table-column>
+                </el-table>
+              </div>
+
+              <!-- 手机端专属卡片列表 (屏幕宽度 <= 768px) -->
+              <div class="mobile-only-cards">
+                <div
+                  v-for="item in filteredContacts"
+                  :key="item.display_name"
+                  class="contact-card-row"
+                  :class="{ 'is-selected': item.selected }"
+                  @click="item.selected = !item.selected"
+                >
+                  <div class="chk-wrap" @click.stop>
+                    <el-checkbox v-model="item.selected" />
+                  </div>
+                  <img v-if="item.avatar" :src="item.avatar" class="contact-avatar-img" alt="" @error="item.avatar = ''" />
+                  <div v-else class="avatar-badge">{{ (item.nickname || '?').charAt(0) }}</div>
+                  <div class="user-meta">
+                    <div class="user-name">{{ item.nickname }}</div>
+                    <div class="user-sub">{{ formatTime(item.last_sent_at) }}</div>
+                  </div>
+                  <div class="pill-group">
+                    <span v-if="item.spark_days > 0" class="spark-pill">🔥 {{ item.spark_days }}天</span>
+                    <span v-else class="no-spark-pill">未点亮</span>
+                    <span class="status-pill-sub" :class="item.last_status || 'pending'">
+                      {{ item.last_status === 'success' ? '成功' : (item.last_status === 'failed' ? '失败' : '待发') }}
+                    </span>
+                  </div>
+                </div>
+                <div v-if="filteredContacts.length === 0" class="empty-state">
+                  暂无好友数据，请点击上方「同步联系人」拉取列表
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 3. 定时与风控设置页 -->
+          <div v-show="tab === 'settings'">
+            <div class="card glass">
+              <div class="card-header">
+                <div>
+                  <h3 class="card-title">
+                    <span class="icon-chip icon-chip-cyan" v-html="ICONS.clock"></span>
+                    定时与拟人化风控配置
+                  </h3>
+                  <p class="card-desc">配置每日自动执行时间、随机抖动延迟与安全发送间隔，保护主号安全。</p>
+                </div>
+                <el-button type="primary" size="small" class="btn-grad mobile-full-btn" :loading="savingConfig" @click="saveConfigForm">
+                  保存设置
+                </el-button>
+              </div>
+
+              <el-form label-position="top" style="max-width: 600px;">
+                <el-form-item label="每日自动发送时间 (24小时制)">
+                  <el-input v-model="config.schedule_time" placeholder="例如 21:00" style="max-width: 200px;" />
+                  <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">建议设置在晚间 20:00 ~ 22:30 之间。</div>
+                </el-form-item>
+
+                <el-form-item label="随机时间抖动 (分钟)">
+                  <el-input-number v-model="config.jitter_minutes" :min="0" :max="60" />
+                  <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">在设定时间的 0 ~ N 分钟内随机启动，模拟真人不规律上线。</div>
+                </el-form-item>
+
+                <div class="mobile-stack-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                  <el-form-item label="好友发送最小间隔 (秒)">
+                    <el-input-number v-model="config.send_gap_min" :min="3" :max="30" />
+                  </el-form-item>
+                  <el-form-item label="好友发送最大间隔 (秒)">
+                    <el-input-number v-model="config.send_gap_max" :min="6" :max="60" />
+                  </el-form-item>
+                </div>
+
+                <el-form-item label="自定义发送文案列表">
+                  <el-input
+                    v-model="messagesText"
+                    type="textarea"
+                    :rows="4"
+                    placeholder="每行一条文案，例如：&#10;🔥 续火花&#10;晚上好 🔥&#10;今天也要开心哦 🔥"
+                  />
+                  <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">每行一条文案，每日发送时系统将从列表中随机抽取一条发送并自动防重。</div>
+                </el-form-item>
+
+                <el-form-item label="定时任务开关">
+                  <el-switch v-model="config.auto_run_enabled" active-text="开启每日自动定时执行" />
+                </el-form-item>
+              </el-form>
+            </div>
+          </div>
+
+          <!-- 4. 运行日志终端页 -->
+          <div v-show="tab === 'logs'">
+            <div class="card glass">
+              <div class="card-header">
+                <div>
+                  <h3 class="card-title">
+                    <span class="icon-chip icon-chip-violet" v-html="ICONS.terminal"></span>
+                    实时运行日志
+                  </h3>
+                  <p class="card-desc">查看后台自动化执行步骤、会话坐标核验与发送状态。</p>
+                </div>
+                <div style="display: flex; gap: 8px;">
+                  <el-button size="small" class="btn-ghost" @click="fetchLogs">刷新日志</el-button>
+                  <el-button size="small" class="btn-ghost" @click="clearLogs">清空显示</el-button>
+                </div>
+              </div>
+
+              <div class="terminal-box">
+                <div class="terminal-header">
+                  <span>better-douyin-streak.log</span>
+                  <span>UTF-8 · 最近 {{ logsContent.split('\\n').length }} 行</span>
+                </div>
+                <pre class="terminal-body" id="terminal-view">{{ logsContent || '暂无日志输出，点击上方“刷新日志”获取。' }}</pre>
+              </div>
+            </div>
+          </div>
+
+          <!-- 5. 通行证凭证管理页 -->
+          <div v-show="tab === 'credentials'">
+            <div class="card glass">
+              <div class="card-header">
+                <div>
+                  <h3 class="card-title">
+                    <span class="icon-chip icon-chip-fire" v-html="ICONS.key"></span>
+                    登录通行证管理
+                  </h3>
+                  <p class="card-desc">管理抖音账号登录凭据 (state.json)，支持手机扫码或直接上传通行证文件。</p>
+                </div>
+              </div>
+
+              <div style="display: flex; flex-direction: column; gap: 16px; max-width: 560px;">
+                <div class="cred-box">
+                  <div style="font-size: 14px; font-weight: 700; margin-bottom: 8px;">
+                    当前账号：{{ currentAccount.name }}
+                    <span style="font-size: 12px; color: var(--text-muted);">({{ currentAccount.id }})</span>
+                  </div>
+                  <div style="font-size: 13px; font-weight: 700; margin-bottom: 8px;">
+                    凭证状态:
+                    <span :style="{ color: status.state_file_exists ? '#0e8a52' : '#c22f34' }">
+                      {{ status.state_file_exists ? '✓ 已检测到有效登录态' : '✗ 未检测到登录态' }}
+                    </span>
+                  </div>
+                  <div style="font-size: 12.5px; color: var(--text-muted); line-height: 1.7;">
+                    推荐直接点击下方「手机扫码登录」，服务器会自动生成二维码，手机扫码后凭证自动保存，全程无需电脑。也可以在电脑端双击 <code>1.本地提取通行证.bat</code> 后上传 <code>state.json</code>；凭证过期时同样在网页端重新扫码即可。
+                  </div>
+                </div>
+
+                <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                  <el-button type="primary" class="btn-grad mobile-full-btn" @click="openQrLogin">
+                    📱 手机扫码登录 / 重新验证
+                  </el-button>
+                  <input type="file" ref="fileInput" accept=".json" style="display: none;" @change="handleFileUpload" />
+                  <el-button class="btn-ghost mobile-full-btn" @click="$refs.fileInput.click()">
+                    上传 state.json 文件
+                  </el-button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <!-- 新建账号弹窗 -->
+    <el-dialog v-model="accountDialogVisible" title="新建抖音账号" width="90%" style="max-width: 440px;">
+      <div style="font-size: 13px; color: var(--text-muted); margin-bottom: 12px; line-height: 1.7;">
+        新建后该账号拥有独立的 <code>data/accounts/{id}/</code> 目录（登录凭证、配置、好友台账互不影响），随后请为其上传对应的 <code>state.json</code> 登录凭证。
+      </div>
+      <el-form label-position="top">
+        <el-form-item label="账号名称（必填）">
+          <el-input v-model="newAccountName" placeholder="例如：主号 / 小号 / 备用号" clearable maxlength="20" />
+        </el-form-item>
+        <el-form-item label="备注（可选）">
+          <el-input v-model="newAccountDevice" placeholder="例如：日常主用手机 / 工作室电脑" clearable maxlength="50" />
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <div style="display: flex; gap: 8px; justify-content: flex-end;">
+          <el-button @click="accountDialogVisible = false">取消</el-button>
+          <el-button type="primary" class="btn-grad" @click="createAccount">创建账号</el-button>
+        </div>
+      </template>
+    </el-dialog>
+
+    <!-- 网页扫码登录弹窗 -->
+    <el-dialog
+      v-model="qrDialogVisible"
+      title="📱 手机扫码登录"
+      width="90%"
+      style="max-width: 400px; text-align: center;"
+      :close-on-click-modal="false"
+      @close="cancelLoginPolling"
+    >
+      <div style="font-size: 13px; color: var(--text-muted); margin-bottom: 14px; line-height: 1.7;">
+        为账号 <strong>{{ currentAccount.name }}</strong> 登录抖音。请打开手机抖音 App → 扫一扫，扫描下方二维码并确认登录。
+      </div>
+
+      <div style="display: flex; flex-direction: column; align-items: center; gap: 12px;">
+        <div v-if="loginState.qrcode" style="padding: 12px; background: #fff; border: 1px solid var(--glass-border-dark); border-radius: var(--radius-md); line-height: 0; box-shadow: 0 10px 30px rgba(58,76,160,0.12);">
+          <img :src="loginState.qrcode" alt="登录二维码" style="width: 220px; height: 220px; object-fit: contain; border-radius: 6px;" />
+        </div>
+        <div v-else-if="isLoginBusy" v-loading="true" style="width: 240px; height: 240px; display: flex; align-items: center; justify-content: center; background: rgba(230,235,245,0.5); border-radius: var(--radius-md);">
+        </div>
+
+        <div style="font-size: 13.5px; font-weight: 700;">
+          {{ loginState.message || '等待中…' }}
+          <span v-if="loginState.status === 'waiting_scan'" style="color: #0e8a52;">（等待扫码确认）</span>
+        </div>
+        <div v-if="loginState.error" style="font-size: 12px; color: #c22f34; word-break: break-all;">{{ loginState.error }}</div>
+      </div>
+
+      <template #footer>
+        <div style="display: flex; gap: 8px; justify-content: center;">
+          <el-button v-if="!isLoginBusy" type="primary" class="btn-grad" @click="startQrLogin">重新获取二维码</el-button>
+          <el-button @click="qrDialogVisible = false">{{ isLoginBusy ? '取消' : '关闭' }}</el-button>
+        </div>
+      </template>
+    </el-dialog>
+
+    <!-- 安全令牌弹窗 -->
+    <el-dialog v-model="tokenDialogVisible" title="管理后台安全令牌 (Token)" width="90%" style="max-width: 440px;" :close-on-click-modal="false">
+      <div style="font-size: 13px; color: var(--text-muted); margin-bottom: 12px; line-height: 1.7;">
+        <div>首次访问或部署在云服务器时，请输入服务器 <code>.env</code> 中配置的 <code>AUTH_TOKEN</code>。</div>
+        <div style="margin-top: 10px; padding: 8px 10px; background: rgba(230,235,245,0.7); border: 1px solid var(--glass-border-dark); border-radius: 10px; display: flex; align-items: center; justify-content: space-between;">
+          <span style="font-size: 12px; color: var(--text-regular);">默认令牌: <code>spark_secret_token_change_me</code></span>
+          <el-button type="primary" link size="small" @click="tokenInput = 'spark_secret_token_change_me'">一键填入</el-button>
+        </div>
+      </div>
+      <el-input
+        v-model="tokenInput"
+        placeholder="输入安全令牌后按回车保存"
+        show-password
+        clearable
+        @keyup.enter="saveToken"
+      />
+      <template #footer>
+        <div style="display: flex; gap: 8px; justify-content: flex-end;">
+          <el-button @click="tokenDialogVisible = false">取消</el-button>
+          <el-button type="primary" class="btn-grad" @click="saveToken">确认保存 (Enter)</el-button>
+        </div>
+      </template>
+    </el-dialog>
+  </div>
+
+  <!-- 引入依赖脚本 -->
+  <script src="/static/vendor/vue.global.prod.js"></script>
+  <script src="/static/vendor/element-plus.full.min.js"></script>
+  <script src="/static/vendor/axios.min.js"></script>
+
+  <script>
+    const { createApp, ref, reactive, computed, watch, onMounted, nextTick } = Vue;
+
+    const ICONS = {
+      fire: `<svg class="icon-svg filled" viewBox="0 0 24 24"><path d="M12.003 2c-.12 0-.24.03-.35.08-1.56.75-3.66 2.37-4.52 4.41-.9 2.13-.53 4.2.49 5.86-.48-.68-.86-1.48-1.02-2.35-.07-.37-.47-.59-.83-.46-.35.12-.55.49-.47.85.34 1.63 1.13 3.09 2.24 4.19C6.46 15.65 6 17.27 6 19c0 2.76 2.69 5 6 5s6-2.24 6-5c0-1.89-.54-3.57-1.74-4.88-.23-.25-.49-.48-.76-.69 1.15-1.12 1.95-2.61 2.29-4.28.08-.36-.12-.73-.47-.85-.36-.13-.76.09-.83.46-.16.87-.54 1.67-1.02 2.35 1.02-1.66 1.39-3.73.49-5.86-.86-2.04-2.96-3.66-4.52-4.41-.11-.05-.23-.08-.35-.08z"/></svg>`,
+      grid: `<svg class="icon-svg" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"></rect><rect x="14" y="3" width="7" height="7" rx="1.5"></rect><rect x="14" y="14" width="7" height="7" rx="1.5"></rect><rect x="3" y="14" width="7" height="7" rx="1.5"></rect></svg>`,
+      users: `<svg class="icon-svg" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>`,
+      clock: `<svg class="icon-svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>`,
+      terminal: `<svg class="icon-svg" viewBox="0 0 24 24"><polyline points="4 17 10 11 4 5"></polyline><line x1="12" y1="19" x2="20" y2="19"></line></svg>`,
+      key: `<svg class="icon-svg" viewBox="0 0 24 24"><path d="M21 2l-2 2m-1.5 1.5L14 9m-1.5 1.5l-2.5 2.5a6 6 0 1 1-8.5 8.5 6 6 0 0 1 8.5-8.5l2.5-2.5m1.5-1.5L16 7m1.5-1.5L20 4"></path></svg>`,
+      reload: `<svg class="icon-svg" viewBox="0 0 24 24"><path d="M23 4v6h-6"></path><path d="M1 20v-6h6"></path><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>`,
+      zap: `<svg class="icon-svg filled" viewBox="0 0 24 24"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg>`,
+      trend: `<svg class="icon-svg" viewBox="0 0 24 24"><polyline points="3 17 9 11 13 15 21 7"></polyline><polyline points="15 7 21 7 21 13"></polyline></svg>`,
+      chart: `<svg class="icon-svg" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>`,
+      trophy: `<svg class="icon-svg" viewBox="0 0 24 24"><path d="M8 21h8"></path><path d="M12 17v4"></path><path d="M7 4h10v6a5 5 0 0 1-10 0V4z"></path><path d="M7 6H4a2 2 0 0 0 2 4h1"></path><path d="M17 6h3a2 2 0 0 1-2 4h-1"></path></svg>`,
+      shield: `<svg class="icon-svg" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>`,
+      keyfill: `<svg class="icon-svg filled" viewBox="0 0 24 24"><path d="M21 2l-2 2m-1.5 1.5L14 9m-1.5 1.5l-2.5 2.5a6 6 0 1 1-8.5 8.5 6 6 0 0 1 8.5-8.5l2.5-2.5m1.5-1.5L16 7m1.5-1.5L20 4"/></svg>`
+    };
+
+    const app = createApp({
+      setup() {
+        const tab = ref('overview');
+        const syncing = ref(false);
+        const savingLedger = ref(false);
+        const savingConfig = ref(false);
+        const tokenDialogVisible = ref(false);
+        const tokenInput = ref('');
+        const searchKeyword = ref('');
+        const logsContent = ref('');
+
+        const navItems = [
+          { name: 'accounts', label: '账号', icon: 'users' },
+          { name: 'overview', label: '概览', icon: 'grid' },
+          { name: 'friends', label: '好友', icon: 'chart' },
+          { name: 'settings', label: '定时', icon: 'clock' },
+          { name: 'logs', label: '日志', icon: 'terminal' },
+          { name: 'credentials', label: '凭证', icon: 'key' },
+        ];
+
+        const status = reactive({
+          state_file_exists: false,
+          running: false,
+          next_run: '',
+          session_status: 'unknown',
+        });
+
+        const dashboard = reactive({
+          summary: {},
+          trend: [],
+          distribution: [],
+          top_streaks: [],
+          recent_runs: [],
+          state_file_exists: false,
+          running: false,
+          next_run: '',
+          session_status: 'unknown',
+          last_run: null,
+        });
+
+        const currentAccountId = ref('default');
+        const accounts = ref([]);
+        const maxConcurrent = ref(5);
+        const browserSlotsAvailable = ref(5);
+        const accountDialogVisible = ref(false);
+        const newAccountName = ref('');
+        const newAccountDevice = ref('');
+
+        const config = reactive({
+          schedule_time: '21:00',
+          jitter_minutes: 30,
+          send_gap_min: 6,
+          send_gap_max: 12,
+          messages: ['🔥 续火花', '晚上好 🔥', '今天也要开心哦 🔥'],
+          auto_run_enabled: true
+        });
+
+        const messagesText = ref('');
+        const contacts = ref([]);
+        const lastRunInfo = reactive({ time: '', summary: '', success: true });
+
+        const getToken = () => {
+          if (typeof window !== 'undefined' && window.__SERVER_AUTH_TOKEN__) {
+            return window.__SERVER_AUTH_TOKEN__;
+          }
+          return localStorage.getItem('dcs_auth_token') || 'spark_secret_token_change_me';
+        };
+        const setToken = (t) => {
+          if (typeof window !== 'undefined') {
+            window.__SERVER_AUTH_TOKEN__ = t;
+          }
+          localStorage.setItem('dcs_auth_token', t);
+        };
+
+        const api = axios.create();
+        api.interceptors.request.use((req) => {
+          req.headers['x-auth-token'] = getToken();
+          if (req.params) {
+            req.params = { ...req.params, account_id: currentAccountId.value };
+          } else {
+            req.params = { account_id: currentAccountId.value };
+          }
+          return req;
+        });
+        api.interceptors.response.use(
+          (res) => res,
+          (err) => {
+            if (err.response && err.response.status === 401) {
+              ElementPlus.ElMessage.error('访问令牌错误，请点击右上角钥匙图标输入正确 Token！');
+              tokenDialogVisible.value = true;
+            }
+            return Promise.reject(err);
+          }
+        );
+
+        const totalContactCount = computed(() => contacts.value.length);
+        const selectedFriendCount = computed(() => contacts.value.filter(c => c.selected).length);
+        const sparkFriendCount = computed(() => contacts.value.filter(c => (c.spark_days || 0) > 0).length);
+
+        const filteredContacts = computed(() => {
+          const sorted = [...contacts.value].sort((a, b) => (b.spark_days || 0) - (a.spark_days || 0));
+          const kw = searchKeyword.value.trim().toLowerCase();
+          if (!kw) return sorted;
+          return sorted.filter(c =>
+            (c.nickname && c.nickname.toLowerCase().includes(kw)) ||
+            (String(c.spark_days || '').includes(kw))
+          );
+        });
+
+        const formatTime = (timeStr) => {
+          if (!timeStr) return '今日待发送';
+          try {
+            const d = new Date(timeStr);
+            if (isNaN(d.getTime())) return String(timeStr);
+            const m = String(d.getMonth() + 1).padStart(2, '0');
+            const day = String(d.getDate()).padStart(2, '0');
+            const h = String(d.getHours()).padStart(2, '0');
+            const min = String(d.getMinutes()).padStart(2, '0');
+            return `上次：${m}-${day} ${h}:${min}`;
+          } catch (e) {
+            return '今日待发送';
+          }
+        };
+
+        const formatDateTime = (s) => {
+          if (!s) return '';
+          try {
+            const d = new Date(s);
+            if (isNaN(d.getTime())) return String(s);
+            return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')} ${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
+          } catch (e) {
+            return String(s || '');
+          }
+        };
+
+        const SESSION_TEXT_MAP = {
+          ok: '会话正常', partial: '部分成功', expired: '登录已过期', failed: '运行失败', unknown: '状态未知'
+        };
+        const sessionStatusText = computed(() => SESSION_TEXT_MAP[status.session_status] || '状态未知');
+
+        const loadStatus = async () => {
+          try {
+            const res = await api.get('/api/status');
+            status.running = res.data.running;
+            status.state_file_exists = res.data.state_file_exists;
+            status.next_run = res.data.next_run;
+            status.session_status = res.data.session_status;
+          } catch (e) {
+            console.error('Failed to load status', e);
+          }
+        };
+
+        const loadDashboard = async () => {
+          try {
+            const res = await api.get('/api/dashboard');
+            Object.assign(dashboard, res.data);
+            status.running = res.data.running;
+            status.state_file_exists = res.data.state_file_exists;
+            status.next_run = res.data.next_run;
+            status.session_status = res.data.session_status;
+            nextTick(() => drawTrendChart());
+          } catch (e) {
+            console.error('Failed to load dashboard', e);
+          }
+        };
+
+        const loadAccounts = async () => {
+          try {
+            const res = await api.get('/api/accounts', { params: {} });
+            accounts.value = res.data.accounts || [];
+            maxConcurrent.value = res.data.max_concurrent ?? 5;
+            browserSlotsAvailable.value = res.data.browser_slots_available ?? res.data.max_concurrent ?? 5;
+            if (accounts.value.length === 0) {
+              accounts.value = [{ id: 'default', name: '默认账号', is_default: true }];
+            }
+            if (!accounts.value.some(a => a.id === currentAccountId.value)) {
+              currentAccountId.value = accounts.value[0].id;
+            }
+          } catch (e) {
+            console.error('Failed to load accounts', e);
+          }
+        };
+
+        const sessionText = (acc) => {
+          const map = { ok: '正常', partial: '部分成功', expired: '登录已过期', failed: '运行失败' };
+          return map[acc.session_status] || '未知';
+        };
+
+        const switchAccount = async (id) => {
+          if (!id) return;
+          currentAccountId.value = id;
+          status.state_file_exists = false;
+          status.running = false;
+          await loadAll();
+        };
+
+        const createAccount = async () => {
+          const name = (newAccountName.value || '').trim();
+          if (!name) {
+            ElementPlus.ElMessage.warning('请输入账号名称');
+            return;
+          }
+          try {
+            const res = await api.post('/api/accounts', { name, device: newAccountDevice.value });
+            if (res.data.ok) {
+              ElementPlus.ElMessage.success(`账号「${res.data.account.name}」创建成功！`);
+              newAccountName.value = '';
+              newAccountDevice.value = '';
+              accountDialogVisible.value = false;
+              await loadAccounts();
+            }
+          } catch (e) {
+            ElementPlus.ElMessage.error('创建失败: ' + (e.response?.data?.detail || e.message));
+          }
+        };
+
+        const updateAccountMeta = async (acc) => {
+          try {
+            const res = await api.put(`/api/accounts/${acc.id}`, {
+              name: acc.name, device: acc.device, enabled: acc.enabled
+            });
+            if (res.data.ok) {
+              ElementPlus.ElMessage.success('账号信息已保存');
+              await loadAccounts();
+            }
+          } catch (e) {
+            ElementPlus.ElMessage.error('保存失败: ' + (e.response?.data?.detail || e.message));
+          }
+        };
+
+        const removeAccount = async (acc) => {
+          if (acc.is_default) return;
+          try {
+            const confirmed = await ElementPlus.ElMessageBox.confirm(
+              `确定删除账号「${acc.name}」？其数据目录将归档到 data/archived/。`,
+              '删除账号', { type: 'warning', confirmButtonText: '删除', cancelButtonText: '取消' }
+            );
+            const res = await api.delete(`/api/accounts/${acc.id}`);
+            if (res.data.ok) {
+              ElementPlus.ElMessage.success('账号已删除');
+              if (currentAccountId.value === acc.id) {
+                await loadAccounts();
+                currentAccountId.value = 'default';
+                await switchAccount('default');
+              } else {
+                await loadAccounts();
+              }
+            }
+          } catch (e) {
+            if (e !== 'cancel') {
+              ElementPlus.ElMessage.error('删除失败: ' + (e.response?.data?.detail || e.message));
+            }
+          }
+        };
+
+        const currentAccount = computed(() => {
+          return accounts.value.find(a => a.id === currentAccountId.value) || {
+            id: currentAccountId.value, name: currentAccountId.value, is_default: true
+          };
+        });
+
+        const loadConfig = async () => {
+          try {
+            const res = await api.get('/api/config');
+            Object.assign(config, res.data);
+            messagesText.value = (res.data.messages || []).join('\n');
+          } catch (e) {
+            console.error('Failed to load config', e);
+          }
+        };
+
+        const loadLedger = async () => {
+          try {
+            const res = await api.get('/api/ledger');
+            const list = res.data.contacts || res.data.entries || [];
+            contacts.value = list.map(item => ({
+              display_name: item.display_name || item.nickname || '',
+              nickname: item.nickname || item.display_name || '',
+              avatar: item.avatar || '',
+              spark_days: Number(item.spark_days || item.streak_days || 0),
+              streak_days: Number(item.streak_days || item.spark_days || 0),
+              selected: Boolean(item.selected),
+              last_status: item.last_status || (item.last_sent_at ? 'success' : 'pending'),
+              last_sent_at: item.last_sent_at || ''
+            }));
+            if (res.data.last_run) {
+              lastRunInfo.time = res.data.last_run.time || '';
+              lastRunInfo.summary = res.data.last_run.summary || '';
+              lastRunInfo.success = res.data.last_run.success !== false;
+            }
+          } catch (e) {
+            console.error('Failed to load ledger', e);
+          }
+        };
+
+        const fetchLogs = async () => {
+          try {
+            const res = await api.get('/api/logs');
+            logsContent.value = res.data.logs || '';
+            nextTick(() => {
+              const el = document.getElementById('terminal-view');
+              if (el) el.scrollTop = el.scrollHeight;
+            });
+          } catch (e) {
+            console.error('Failed to fetch logs', e);
+          }
+        };
+
+        const clearLogs = () => {
+          logsContent.value = '';
+        };
+
+        const loadAll = async () => {
+          await loadAccounts();
+          await Promise.all([loadStatus(), loadConfig(), loadLedger(), fetchLogs(), loadDashboard()]);
+        };
+
+        const runStreak = async (dryRun = false) => {
+          if (selectedFriendCount.value === 0) {
+            ElementPlus.ElMessage.warning('⚠️ 您尚未勾选任何好友！请在「好友与消息」中勾选好友后再执行。');
+            tab.value = 'friends';
+            return;
+          }
+          try {
+            ElementPlus.ElMessage.info(dryRun ? '正在以模拟演练模式启动...' : '正在启动续火花流程...');
+            const res = await api.post('/api/run', { dry_run: dryRun });
+            if (res.data.ok) {
+              ElementPlus.ElMessage.success('任务已成功触发并在后台运行！');
+              tab.value = 'logs';
+              loadAll();
+            } else {
+              ElementPlus.ElMessage.error(res.data.message || '启动失败');
+            }
+          } catch (e) {
+            ElementPlus.ElMessage.error('触发失败: ' + (e.response?.data?.detail || e.message));
+          }
+        };
+
+        const resetRunningState = async () => {
+          try {
+            const res = await api.post('/api/reset-running');
+            if (res.data.ok) {
+              ElementPlus.ElMessage.success('运行状态已强制重置！');
+              await loadAll();
+            }
+          } catch (e) {
+            ElementPlus.ElMessage.error('重置失败: ' + (e.response?.data?.detail || e.message));
+          }
+        };
+
+        const syncContacts = async () => {
+          syncing.value = true;
+          try {
+            ElementPlus.ElMessage.info('🚀 正在启动后台同步联系人列表（预计 10~20 秒）...');
+            await api.post('/api/sync');
+
+            let checks = 0;
+            const timer = setInterval(async () => {
+              checks++;
+              try {
+                const resLedger = await api.get('/api/ledger');
+                const isFetching = resLedger.data.fetching;
+                if (!isFetching || checks >= 240) {
+                  clearInterval(timer);
+                  syncing.value = false;
+                  await loadLedger();
+                  await loadDashboard();
+                  const total = contacts.value.length;
+                  const sparks = contacts.value.filter(c => (c.spark_days || 0) > 0).length;
+                  if (total > 0) {
+                    ElementPlus.ElMessage.success(`🎉 同步完成！已获取 ${total} 位好友，其中 ${sparks} 位带有火花！`);
+                  } else if (checks >= 240) {
+                    ElementPlus.ElMessage.info('同步耗时较长仍在后台进行，稍后刷新页面即可查看结果。');
+                  } else {
+                    ElementPlus.ElMessage.warning('未能读取到联系人，请确认已上传登录凭证 state.json。');
+                  }
+                }
+              } catch (err) {
+                clearInterval(timer);
+                syncing.value = false;
+              }
+            }, 1500);
+          } catch (e) {
+            syncing.value = false;
+            ElementPlus.ElMessage.error('同步请求失败: ' + (e.response?.data?.detail || e.message));
+          }
+        };
+
+        const autoSelectSparkFriends = () => {
+          let count = 0;
+          contacts.value.forEach(c => {
+            if ((c.spark_days || 0) > 0) {
+              c.selected = true;
+              count++;
+            }
+          });
+          ElementPlus.ElMessage.success(`已自动勾选 ${count} 位火花好友，请点击“保存勾选配置”！`);
+        };
+
+        const clearSelectedFriends = () => {
+          contacts.value.forEach(c => c.selected = false);
+          ElementPlus.ElMessage.info('已清空全部勾选，请点击“保存勾选配置”生效。');
+        };
+
+        const saveLedgerSelection = async () => {
+          savingLedger.value = true;
+          try {
+            const selectedNames = contacts.value.filter(c => c.selected).map(c => c.display_name || c.nickname);
+            const res = await api.post('/api/ledger/selection', { selected_names: selectedNames });
+            if (res.data.ok) {
+              ElementPlus.ElMessage.success(`好友勾选配置已成功保存！当前生效勾选 ${selectedNames.length} 人`);
+              await loadLedger();
+              await loadDashboard();
+            }
+          } catch (e) {
+            ElementPlus.ElMessage.error('保存失败: ' + (e.response?.data?.detail || e.message));
+          } finally {
+            savingLedger.value = false;
+          }
+        };
+
+        const saveConfigForm = async () => {
+          savingConfig.value = true;
+          try {
+            const msgs = messagesText.value.split('\n').map(s => s.trim()).filter(Boolean);
+            config.messages = msgs.length > 0 ? msgs : ['🔥 续火花'];
+            const res = await api.post('/api/config', config);
+            if (res.data.ok) {
+              ElementPlus.ElMessage.success('定时与风控设置已保存！');
+            }
+          } catch (e) {
+            ElementPlus.ElMessage.error('保存失败: ' + (e.response?.data?.detail || e.message));
+          } finally {
+            savingConfig.value = false;
+          }
+        };
+
+        const handleFileUpload = async (event) => {
+          const file = event.target.files[0];
+          if (!file) return;
+          const formData = new FormData();
+          formData.append('file', file);
+          try {
+            ElementPlus.ElMessage.info('正在上传通行证凭据...');
+            const res = await api.post('/api/upload-state', formData, {
+              headers: { 'Content-Type': 'multipart/form-data' }
+            });
+            if (res.data.ok) {
+              ElementPlus.ElMessage.success('state.json 通行证凭证已成功上传并就绪！');
+              await loadStatus();
+            }
+          } catch (e) {
+            ElementPlus.ElMessage.error('上传失败: ' + (e.response?.data?.detail || e.message));
+          }
+        };
+
+        // ── 网页扫码登录 ──
+        const LOGIN_BUSY_STATES = ['queuing', 'starting', 'waiting_scan'];
+        const qrDialogVisible = ref(false);
+        const loginState = ref({ status: 'idle', message: '', qrcode: '', error: '' });
+        let loginPollTimer = null;
+
+        const isLoginBusy = computed(() => LOGIN_BUSY_STATES.includes(loginState.value.status));
+
+        const stopLoginPolling = () => {
+          if (loginPollTimer) { clearInterval(loginPollTimer); loginPollTimer = null; }
+        };
+
+        const pollLoginStatus = async () => {
+          try {
+            const res = await api.get('/api/login/status');
+            loginState.value = res.data;
+            if (!LOGIN_BUSY_STATES.includes(res.data.status)) {
+              stopLoginPolling();
+              if (res.data.status === 'success') {
+                ElementPlus.ElMessage.success('登录成功！当前账号登录态已更新。');
+                setTimeout(() => { qrDialogVisible.value = false; }, 1200);
+                await Promise.all([loadStatus(), loadAccounts(), loadDashboard()]);
+              } else if (res.data.status === 'failed' || res.data.status === 'expired') {
+                ElementPlus.ElMessage.warning(loginState.value.message || '扫码未完成，请重试');
+              }
+            }
+          } catch (e) { /* 轮询失败静默，下个周期重试 */ }
+        };
+
+        const startLoginPolling = () => {
+          stopLoginPolling();
+          pollLoginStatus();
+          loginPollTimer = setInterval(pollLoginStatus, 1500);
+        };
+
+        const startQrLogin = async () => {
+          loginState.value = { status: 'queuing', message: '正在排队获取浏览器名额…', qrcode: '', error: '' };
+          try {
+            await api.post('/api/login/start');
+            startLoginPolling();
+          } catch (e) {
+            loginState.value = { status: 'failed', message: '发起扫码失败', qrcode: '', error: e.response?.data?.detail || e.message };
+          }
+        };
+
+        const goToCredentials = () => {
+          tab.value = 'credentials';
+        };
+
+        const openQrLogin = () => {
+          ElementPlus.ElMessageBox.confirm(
+            '<div style="text-align: left; line-height: 2; font-size: 13px;">'
+            + '1. 请先拿出手机，打开抖音 App 并登录，做好扫码准备<br/>'
+            + '2. 点击「开始扫码」后，二维码生成约需 20~40 秒，请耐心等待<br/>'
+            + '3. 二维码出现后请<b>立即扫码</b>，它会不定时自动刷新，请时刻关注其变化<br/>'
+            + '4. 若提示安全验证，页面会弹出<b>新的二维码</b>，请继续用手机扫码完成验证'
+            + '</div>',
+            '手机扫码登录须知',
+            {
+              dangerouslyUseHTMLString: true,
+              confirmButtonText: '已备好手机，开始扫码',
+              cancelButtonText: '再等等',
+              type: 'warning',
+            }
+          ).then(() => {
+            qrDialogVisible.value = true;
+            startQrLogin();
+          }).catch(() => {});
+        };
+
+        const cancelLoginPolling = async () => {
+          stopLoginPolling();
+          if (isLoginBusy.value) {
+            try { await api.post('/api/login/cancel'); } catch (e) { /* ignore */ }
+            loginState.value = { status: 'cancelled', message: '已取消', qrcode: '', error: '' };
+          }
+        };
+
+        const showTokenDialog = () => {
+          tokenInput.value = getToken();
+          tokenDialogVisible.value = true;
+        };
+
+        const saveToken = async () => {
+          const val = (tokenInput.value || '').trim();
+          if (!val) {
+            ElementPlus.ElMessage.warning('请输入安全令牌！若未修改过请点击「一键填入」默认令牌。');
+            return;
+          }
+          setToken(val);
+          tokenDialogVisible.value = false;
+          try {
+            await loadAll();
+            ElementPlus.ElMessage.success('🎉 安全令牌已更新并验证成功！');
+          } catch (e) {
+            ElementPlus.ElMessage.error('❌ 安全令牌验证失败，请核对与服务器 .env 中的 AUTH_TOKEN 是否一致！');
+            tokenDialogVisible.value = true;
+          }
+        };
+
+        // ── 图表数据：Canvas 折线图（成功=橙色实线，失败=红色虚线）──
+        const trendData = computed(() => dashboard.trend || []);
+        const trendCanvas = ref(null);
+        let trendObserver = null;
+        let trendResizeFn = null;
+
+        let trendRAF = null;
+        const drawTrendChart = (animate = true) => {
+          const canvas = trendCanvas.value;
+          if (!canvas || !canvas.parentElement) return;
+          const data = trendData.value;
+          if (!data.length) return;
+          const dpr = window.devicePixelRatio || 1;
+          const cssW = Math.max(60, canvas.clientWidth || canvas.parentElement.clientWidth || 400);
+          const cssH = Math.max(60, canvas.clientHeight || 190);
+          canvas.width = Math.round(cssW * dpr);
+          canvas.height = Math.round(cssH * dpr);
+          const ctx = canvas.getContext('2d');
+          ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+          const padX = 14, padTop = 18, padBottom = 8;
+          const innerW = cssW - padX * 2;
+          const innerH = cssH - padTop - padBottom;
+          const n = data.length;
+          const maxV = Math.max(1, ...data.map(d => Math.max(d.ok || 0, d.failed || 0)));
+          const stepX = n > 1 ? innerW / (n - 1) : 0;
+          const px = (i) => padX + i * stepX;
+          const py = (v) => padTop + innerH - (v / maxV) * innerH;
+
+          // 成功折线总长度（用于描边生长动画）
+          let totalLen = 0;
+          for (let i = 1; i < n; i++) {
+            totalLen += Math.hypot(px(i) - px(i - 1), py(data[i].ok || 0) - py(data[i - 1].ok || 0));
+          }
+
+          const render = (prog) => {
+            ctx.clearRect(0, 0, cssW, cssH);
+
+            // 网格线
+            ctx.save();
+            ctx.strokeStyle = 'rgba(220,226,240,0.75)';
+            ctx.lineWidth = 1;
+            ctx.setLineDash([4, 4]);
+            for (let g = 0; g <= 4; g++) {
+              const y = padTop + innerH * (g / 4);
+              ctx.beginPath();
+              ctx.moveTo(padX, y);
+              ctx.lineTo(cssW - padX, y);
+              ctx.stroke();
+            }
+            ctx.restore();
+
+            // 失败折线（虚线红，淡入）
+            ctx.save();
+            ctx.globalAlpha = prog;
+            ctx.beginPath();
+            data.forEach((d, i) => {
+              const x = px(i), y = py(d.failed || 0);
+              if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+            });
+            ctx.strokeStyle = '#f43f5e';
+            ctx.lineWidth = 1.6;
+            ctx.setLineDash([5, 4]);
+            ctx.stroke();
+            ctx.restore();
+
+            // 成功面积渐变（淡入）
+            const grad = ctx.createLinearGradient(0, padTop, 0, cssH - padBottom);
+            grad.addColorStop(0, 'rgba(255,106,61,0.30)');
+            grad.addColorStop(1, 'rgba(255,106,61,0)');
+            ctx.save();
+            ctx.globalAlpha = prog;
+            ctx.beginPath();
+            data.forEach((d, i) => {
+              const x = px(i), y = py(d.ok || 0);
+              if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+            });
+            ctx.lineTo(cssW - padX, cssH - padBottom);
+            ctx.lineTo(padX, cssH - padBottom);
+            ctx.closePath();
+            ctx.fillStyle = grad;
+            ctx.fill();
+            ctx.restore();
+
+            // 成功折线（橙色实线，描边生长）
+            ctx.save();
+            ctx.beginPath();
+            data.forEach((d, i) => {
+              const x = px(i), y = py(d.ok || 0);
+              if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+            });
+            ctx.strokeStyle = '#ff6a3d';
+            ctx.lineWidth = 2.6;
+            ctx.lineJoin = 'round';
+            ctx.lineCap = 'round';
+            if (animate && totalLen > 0) {
+              ctx.setLineDash([totalLen, totalLen]);
+              ctx.lineDashOffset = totalLen * (1 - prog);
+            }
+            ctx.stroke();
+            ctx.restore();
+
+            // 数据点（随进度逐个浮现）
+            ctx.save();
+            data.forEach((d, i) => {
+              const appear = animate ? (i / Math.max(1, n - 1)) : 0;
+              if (prog < appear) return;
+              const x = px(i), y = py(d.ok || 0);
+              ctx.globalAlpha = Math.min(1, (prog - appear) * 6);
+              ctx.beginPath();
+              ctx.arc(x, y, 4, 0, Math.PI * 2);
+              ctx.fillStyle = '#ffffff';
+              ctx.fill();
+              ctx.lineWidth = 2.2;
+              ctx.strokeStyle = '#ff6a3d';
+              ctx.stroke();
+            });
+            ctx.restore();
+          };
+
+          if (trendRAF) cancelAnimationFrame(trendRAF);
+          const dur = animate ? 700 : 1;
+          const start = performance.now();
+          const tick = (t) => {
+            const prog = Math.min(1, (t - start) / dur);
+            render(prog);
+            if (prog < 1) trendRAF = requestAnimationFrame(tick);
+            else trendRAF = null;
+          };
+          trendRAF = requestAnimationFrame(tick);
+        };
+
+        const setupTrendChart = () => {
+          drawTrendChart(true);
+          if (window.ResizeObserver && trendCanvas.value) {
+            try {
+              trendObserver = new ResizeObserver(() => drawTrendChart(false));
+              trendObserver.observe(trendCanvas.value);
+            } catch (e) { /* ignore */ }
+          }
+          if (!trendResizeFn) {
+            trendResizeFn = () => drawTrendChart(false);
+            window.addEventListener('resize', trendResizeFn);
+          }
+        };
+        const distMax = computed(() => Math.max(1, ...(dashboard.distribution || []).map(b => b.count)));
+        const distPct = (c) => Math.round((c / distMax.value) * 100);
+
+        // ── 指标数字滚动动画 ──
+        const animVals = reactive({ selected: 0, spark: 0, max: 0, ok: 0 });
+        const countTimers = { selected: null, spark: null, max: null, ok: null };
+        const easeOutCubic = (t) => 1 - Math.pow(1 - t, 3);
+        const animateNum = (from, to, key, dur = 700) => {
+          if (countTimers[key]) cancelAnimationFrame(countTimers[key]);
+          const startT = performance.now();
+          const run = (t) => {
+            const p = Math.max(0, Math.min(1, (t - startT) / dur));
+            animVals[key] = Math.round(from + (to - from) * easeOutCubic(p));
+            if (p < 1) countTimers[key] = requestAnimationFrame(run);
+            else animVals[key] = to;
+          };
+          countTimers[key] = requestAnimationFrame(run);
+        };
+        watch(() => selectedFriendCount.value, (v, o) => animateNum(o || 0, v, 'selected'), { immediate: true });
+        watch(() => sparkFriendCount.value, (v, o) => animateNum(o || 0, v, 'spark'), { immediate: true });
+        watch(() => dashboard.summary.max_streak, (v, o) => animateNum(o || 0, Number(v) || 0, 'max'), { immediate: true });
+        watch(() => dashboard.summary.ok_sends_total, (v, o) => animateNum(o || 0, Number(v) || 0, 'ok'), { immediate: true });
+
+        onMounted(() => {
+          if (typeof window !== 'undefined' && window.__SERVER_AUTH_TOKEN__) {
+            setToken(window.__SERVER_AUTH_TOKEN__);
+          }
+          loadAll();
+          nextTick(setupTrendChart);
+          setInterval(loadStatus, 10000);
+          setInterval(loadDashboard, 30000);
+        });
+
+        return {
+          tab, goToCredentials, navItems, status, dashboard, currentAccountId, accounts,
+          currentAccount, maxConcurrent, browserSlotsAvailable, sessionText, sessionStatusText,
+          accountDialogVisible, newAccountName, newAccountDevice, config, messagesText, contacts,
+          lastRunInfo, totalContactCount, selectedFriendCount, sparkFriendCount, filteredContacts,
+          searchKeyword, logsContent, syncing, savingLedger, savingConfig, tokenDialogVisible,
+          tokenInput, ICONS, trendData, trendCanvas, drawTrendChart, distPct, formatTime, formatDateTime, animVals,
+          loadAll, loadAccounts, switchAccount, createAccount, updateAccountMeta, removeAccount,
+          runStreak, resetRunningState, syncContacts, autoSelectSparkFriends, clearSelectedFriends,
+          saveLedgerSelection, saveConfigForm, fetchLogs, clearLogs, handleFileUpload,
+          qrDialogVisible, loginState, isLoginBusy, openQrLogin, startQrLogin, cancelLoginPolling,
+          showTokenDialog, saveToken
+        };
+      }
+    });
+
+    app.use(ElementPlus);
+    app.mount('#app');
+  </script>
+</body>
+</html>
